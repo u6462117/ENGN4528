@@ -88,25 +88,9 @@ gChannel = imageData(:,:,3);
 grayImage = rgb2gray(imageData);
 tic
 edges_canny = edge(grayImage,'Canny');
-toc
-
-tic
 edges_prewitt = edge(grayImage,'Prewitt');
-toc
-
-tic
 edges_roberts = edge(grayImage,'Roberts');
-toc
-
-tic
 edges_sobel = edge(grayImage,'Sobel');
-toc
-
-% Respectively
-% Elapsed time is 0.025429 seconds.
-% Elapsed time is 0.005228 seconds.
-% Elapsed time is 0.007340 seconds.
-% Elapsed time is 0.003549 seconds.
 
 figure();
 subplot(2,2,1);
@@ -144,27 +128,6 @@ rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
 
 %% alt: histogram 
 %% sliding window
-% for loop to identify birds
-
-% pixel of window
-% nested for loop
-% 	threshold: above a certain intensity
-% 	that's where the bird is
-% 
-% 
-% keep checking #red pixels within the box (sliding window) every row 
-% 
-% for width
-% 	for height
-% 		sum of total redCh
-
-
-
-%% time tests
-% tic
-% toc
-% profile on
-% profileViewer
 
 % tic
 % edge_detector_function_1
@@ -173,6 +136,13 @@ rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
 % tic
 % edge_detector_function_2
 % toc
+
+%% time tests
+% tic
+% toc
+% 
+% profile on
+% profileViewer
 
 % Before you run script,
 % profile on;
