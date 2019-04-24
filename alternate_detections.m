@@ -43,8 +43,6 @@ B = vidFrame(:,:,3);
 %230,30,30
 
 %result = (R>200 & R< 250) .* (G < 20) .* (B>20 & B<50);
-result = (R>210 & R< 250) .* (G > 10 & G < 50) .* (B > 10 & B < 50);
+result = (R>117 & R< 219) .* (G < 89) .* (B > 13 & B < 116);
 imagesc(result);
 
-figure()
-imagesc(slice(:,:,1))
