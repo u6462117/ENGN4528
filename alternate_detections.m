@@ -7,26 +7,44 @@ v.currentTime = 15;
 currAxes = axes;
 vidFrame = readFrame(v);
 
-%Display frame
-image(vidFrame, 'Parent', currAxes);
-
-%Slice
-figure()
+% %Display frame
+% image(vidFrame, 'Parent', currAxes);
+% 
+% %Slice
+% figure()
 slice = vidFrame(90:110,60:80,:);
-imshow(slice);
+% imshow(slice);
+% 
+% %Display histogram of red channel
+% figure();
+% imhist(slice(:,:,1))
+% title('Red')
+% 
+% figure();
+% imhist(slice(:,:,2))
+% title('Green')
+% 
+% figure();
+% imhist(slice(:,:,3))
+% title('Blue')
 
-%Display histogram of red channel
-figure();
-imhist(slice(:,:,1))
-title('Red')
 
-figure();
-imhist(slice(:,:,2))
-title('Green')
+%% 
+% outIm = my_kmeans(vidFrame, 7, 'random', false);
+% imagesc(outIm)
 
-figure();
-imhist(slice(:,:,3))
-title('Blue')
+% 216,0,38
+% 170,0,30
 
+R = vidFrame(:,:,1);
+G = vidFrame(:,:,2);
+B = vidFrame(:,:,3);
 
+%230,30,30
 
+%result = (R>200 & R< 250) .* (G < 20) .* (B>20 & B<50);
+result = (R>210 & R< 250) .* (G > 10 & G < 50) .* (B > 10 & B < 50);
+imagesc(result);
+
+figure()
+imagesc(slice(:,:,1))
