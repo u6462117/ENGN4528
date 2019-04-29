@@ -1,11 +1,45 @@
 close all;
 v = VideoReader('../../Angry Birds In-game Trailer.avi');
-% numOfFrames = v.NumberOfFrame;
-% Frame at 15 secs in video (same as (?) Frame 450)
-v.CurrentTime = 15;
+
 currAxes = axes;
 fontSize = 14;
+
+% numOfFrames = v.NumberOfFrame;
+
+%%%%% -------- Red Bird ---------- %%%%%
+% Frame at 15 secs in video (same as (?) Frame 450)
+% v.CurrentTime = 15;
+% theFrame = readFrame(v);
+% figure();
+% detectRedBird(theFrame);
+
+%%%%% -------- Blue Bird ---------- %%%%%
+v.currentTime = 26;
 theFrame = readFrame(v);
+figure();
+detectBlueBird(theFrame);
+
+%%%%% -------- Yellow Bird ---------- %%%%%
+% v.currentTime = 31;
+% theFrame = readFrame(v);
+% figure();
+% detectYellowBird(theFrame);
+
+%%%%% -------- Black Bird ---------- %%%%%
+% v.currentTime = 39;
+% theFrame = readFrame(v);
+% figure();
+% detectBlackBird(theFrame);
+
+%%%%% -------- White Bird ---------- %%%%%
+% v.currentTime = 42;
+% theFrame = readFrame(v);
+% detectWhiteBird(theFrame)
+
+%%%%% -------- Green Pigs ---------- %%%%%
+theFrame = readFrame(v);
+figure();
+detectGreenPigs(theFrame);
 
 % R = theFrame(:,:,1);
 % B = theFrame(:,:,2);

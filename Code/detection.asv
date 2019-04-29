@@ -1,11 +1,16 @@
 close all;
 v = VideoReader('../../Angry Birds In-game Trailer.avi');
 
-%% Frame at 15 secs in video (same as (?) Frame 450)
-% v.CurrentTime = 15;
 currAxes = axes;
-fontSize = 14
-% theFrame = readFrame(v);
+fontSize = 14;
+
+%%%%% -------- Red Bird ---------- %%%%%
+% numOfFrames = v.NumberOfFrame;
+% Frame at 15 secs in video (same as (?) Frame 450)
+v.CurrentTime = 15;
+theFrame = readFrame(v);
+
+%%%%% -------- Blue Bird ---------- %%%%%
 
 % R = theFrame(:,:,1);
 % B = theFrame(:,:,2);
@@ -23,9 +28,8 @@ while hasFrame(v)
     % Display it.
     imshow(thisFrame);
     axis on;
-    caption = sprintf('Original RGB, frame #%d 0f %d', k, numOfFrames);
+    caption = sprintf('Original RGB, frame #%d', k);
     title(caption, 'FontSize', fontSize);
-    result = (R>117 & R< 219) .* (G < 89) .* (B > 13 & B < 116);
     drawnow;
     
     hsv = rgb2hsv(double(thisFrame));
@@ -51,35 +55,19 @@ while hasFrame(v)
     axis on;
     title('Value', 'FontSize', fontSize);
     
-    subplot(3, 4, 5);
-    imshow(R, []);
-    axis on;
-    title('Red Channel', 'FontSize', fontSize);
-    subplot(3, 4, 6);
-    imshow(G, []);
-    axis on;
-    title('Green Channel', 'FontSize', fontSize);
-    subplot(3, 4, 7);
-    imshow(B, []);
-    axis on;
-    title('Blue Channel', 'FontSize', fontSize);
-    
-    binaryH = hue >= hThresholds(1) & hue <= hThresholds(2);
-	binaryS = sat >= sThresholds(1) & sat <= sThresholds(2);
-	binaryV = val >= vThresholds(1) & val <= vThresholds(2);
-    subplot(3, 4, 10);
-	imshow(binaryH, []);
-	axis on;
-	title('Hue Mask', 'FontSize', fontSize);
-	subplot(3, 4, 11);
-	imshow(binaryS, []);
-	axis on;
-	title('Saturation Mask', 'FontSize', fontSize);
-	subplot(3, 4, 12);
-	imshow(binaryV, []);
-	axis on;
-	title('Value Mask', 'FontSize', fontSize);
-    
+%     subplot(3, 4, 5);
+%     imshow(R, []);
+%     axis on;
+%     title('Red Channel', 'FontSize', fontSize);
+%     subplot(3, 4, 6);
+%     imshow(G, []);
+%     axis on;
+%     title('Green Channel', 'FontSize', fontSize);
+%     subplot(3, 4, 7);
+%     imshow(B, []);
+%     axis on;
+%     title('Blue Channel', 'FontSize', fontSize);
+
     if k == 1
         % Enlarge figure to full screen.
         set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
@@ -91,6 +79,69 @@ while hasFrame(v)
             'Value',0,'Position', [.2 .96 .4 .05], ...
             'FontSize', 14);
     end
+    binaryH = hue >= hThresholds(1) & hue <= hThresholds(2);
+	binaryS = sat >= sThresholds(1) & sat <= sThresholds(2);
+	binaryV = val >= vThresholds(1) & val <= vThresholds(2);
+    subplot(3, 4, 5);
+	imshow(binaryH, []);
+	axis on;
+	title('Hue Mask', 'FontSize', fontSize);
+	subplot(3, 4, 6);
+	imshow(binaryS, []);
+	axis on;
+	title('Saturation Mask', 'FontSize', fontSize);
+	subplot(3, 4, 7);
+	imshow(binaryV, []);
+	axis on;
+	title('Value Mask', 'FontSize', fontSize);
+    
+    % Overall color mask is the AND of all the masks.
+	coloredMask = binaryH & binaryS & binaryV;
+	% Filter out small blobs.
+	coloredMask = bwareaopen(coloredMask, 500);
+	% Fill holes
+	coloredMask = imfill(coloredMask, 'holes');
+	subplot(3, 4, 9);
+	imshow(coloredMask, []);
+	axis on;
+	title('Colored Blob Mask', 'FontSize', fontSize);
+	drawnow;
+	
+	[labeledImage, numberOfRegions] = bwlabel(coloredMask);
+	if numberOfRegions >= 1
+		stats = regionprops(labeledImage, 'BoundingBox', 'Centroid');
+		% Delete old texts and rectangles
+		if exist('hRect', 'var')
+			delete(hRect);
+		end
+		if exist('hText', 'var')
+			delete(hText);
+		end
+		
+		% Display the original image again.
+		subplot(3, 4, 5); % Switch to original image.
+		hImage=subplot(3, 4, 5);
+		imshow(thisFrame);
+		axis on;
+		hold on;
+		caption = sprintf('%d blobs found in frame #%d', numberOfRegions, k);
+		title(caption, 'FontSize', fontSize);
+		drawnow;
+		
+		%This is a loop to bound the colored objects in a rectangular box.
+		for r = 1 : numberOfRegions
+			% Find location for this blob.
+			thisBB = stats(r).BoundingBox;
+			thisCentroid = stats(r).Centroid;
+			hRect(r) = rectangle('Position', thisBB, 'EdgeColor', 'r', 'LineWidth', 2);
+			hSpot = plot(thisCentroid(1), thisCentroid(2), 'y+', 'MarkerSize', 10, 'LineWidth', 2)
+			hText(r) = text(thisBB(1), thisBB(2)-20, strcat('X: ', num2str(round(thisCentroid(1))), '    Y: ', num2str(round(thisCentroid(2)))));
+			set(hText(r), 'FontName', 'Arial', 'FontWeight', 'bold', 'FontSize', 12, 'Color', 'yellow');
+		end
+		hold off
+		drawnow;
+    end
+    
     k = k+1;
     if get(hCheckbox, 'Value')
         Finish now checkbox is checked.
