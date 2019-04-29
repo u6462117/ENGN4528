@@ -1,3 +1,4 @@
+close all;
 v = VideoReader('../../Angry Birds In-game Trailer.avi');
 
 %% Read all video frames.
@@ -25,19 +26,19 @@ mov = struct('cdata',zeros(vidHeight,vidWidth,3,'uint8'),...
     'colormap',[]);
 
 k = 1;
-while hasFrame(v) % v.CurrentTime <= 0.9
-    mov(k).cdata = readFrame(v);
-%     if k == 450
-%         imshow(mov(k).cdata);
-%         hold on
-%         rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3);
-%         F = getframe;
-%         mov(k).cdata = F;
-%         hold on
-%         mov(450).cdata = rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3);
-%     end
-    k = k+1; 
-end
+% while hasFrame(v) % v.CurrentTime <= 0.9
+%     mov(k).cdata = readFrame(v);
+% %     if k == 450
+% %         imshow(mov(k).cdata);
+% %         hold on
+% %         rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3);
+% %         F = getframe;
+% %         mov(k).cdata = F;
+% %         hold on
+% %         mov(450).cdata = rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3);
+% %     end
+%     k = k+1; 
+% end
 
 %% Draw bounding box of red bird on frame 450
 % mov(450).cdata = rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3);
@@ -50,9 +51,9 @@ end
 
 % Resize the current figure and axes based on the video's width and height
 % and play at video's rate
-set(gcf,'position',[150 150 v.Width v.Height]);
-set(gca,'units','pixels');
-set(gca,'position',[0 0 v.Width v.Height]);
+% set(gcf,'position',[150 150 v.Width v.Height]);
+% set(gca,'units','pixels');
+% set(gca,'position',[0 0 v.Width v.Height]);
 
 % F = getframe;
 % plot(rand(5))
@@ -67,22 +68,50 @@ set(gca,'position',[0 0 v.Width v.Height]);
 
 %% Frame at 15 secs in video (same as above Frame 450)
 v.CurrentTime = 15;
-imageData = readFrame(v);
+currAxes = axes;
+theFrame = readFrame(v);
 
 %% RGB of pixel col 1 row 2
-zz = impixel(imageData,1,2);
+% zz = impixel(imageData,1,2);
 % zzz = impixel(thisFrame,1,2);
 %% zz and zzz are equivalent
 
 % imshow(imageData);
 
-rChannel = imageData(:,:,1);
-bChannel = imageData(:,:,2);
-gChannel = imageData(:,:,3);
+R = theFrame(:,:,1);
+B = theFrame(:,:,2);
+G = theFrame(:,:,3);
 
-% imagesc(rChannel);
-% imagesc(bChannel);
-% imagesc(gChannel);
+%% Alternative
+%% Red Bird
+image(theFrame, 'Parent', currAxes);
+slice = theFrame(90:110,60:80,:);
+result = (R>117 & R< 219) .* (G < 89) .* (B > 13 & B < 116);
+
+% Duplicate result Matrix to obtain areas of interest
+% M = zeros(size(result));
+% M(result == 1) = 1;
+% M = M(M(result == 1), :);
+% [row,col,v] = find(result);
+% detectedPos = [60, 80, 30, 30];
+% detectedXY = size(M);
+% detectedPos = [detectedXY, 30, 30];
+% 
+figure(),imagesc(result);
+% hold on;
+% rectangle('Position', detectedPos, 'EdgeColor','r', 'LineWidth', 3);
+% 
+% M = M(90:110,60:80);
+% figure(),imagesc(M);
+% 
+% [nRows, nCols] = size(theFrame);
+
+% for rI = 1:nRows
+%     for cI = 1:nCols
+
+% imagesc(R);
+% imagesc(B);
+% imagesc(G);
 
 %% make copy as grayscale, canny edge detection, compare with original R channel
 % grayImage = rgb2gray(imageData);
@@ -126,10 +155,10 @@ gChannel = imageData(:,:,3);
 % title("Sobel Edge");
 
 %% "Crop" the bird/pig, get their location (row/col)
-bird_rCh = rChannel(80:120,50:100);
+bird_rCh = R(80:120,50:100);
 % imagesc(bird_rCh);
 
-bird_canny = grayImage(80:120,50:100);
+% bird_canny = grayImage(80:120,50:100);
 % imagesc(bird_canny);
 
 % measurements = regionprops(logical(bird_canny), 'BoundingBox');
@@ -137,10 +166,10 @@ bird_canny = grayImage(80:120,50:100);
 % hold on;
 % rectangle('Position', bBox, 'EdgeColor', 'r');
 
-figure();
-imagesc(imageData);
-% hold on
-rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
+% figure();
+% imagesc(imageData);
+% % hold on
+% rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
 
 %% alt: histogram 
 %% sliding window
@@ -160,15 +189,15 @@ rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
 
 % redThr = rChannel > 220;
 
-for row = 1 : size(rChannel,1)
-    for col = 1 : size(rChannel,2)
-        pix = rChannel(row,col);
-        
-        if pix > redThr
-            rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
-        end
-    end
-end
+% for row = 1 : size(rChannel,1)
+%     for col = 1 : size(rChannel,2)
+%         pix = rChannel(row,col);
+%         
+%         if pix > redThr
+%             rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
+%         end
+%     end
+% end
 
 % imagesc(rChannel)
 % [nRows, nCols] = size(rChannel);

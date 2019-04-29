@@ -1,3 +1,4 @@
+close()
 v = VideoReader('../../Angry Birds In-game Trailer.avi');
 
 %% Read all video frames.
@@ -50,15 +51,15 @@ end
 
 % Resize the current figure and axes based on the video's width and height
 % and play at video's rate
-set(gcf,'position',[150 150 v.Width v.Height]);
-set(gca,'units','pixels');
-set(gca,'position',[0 0 v.Width v.Height]);
+% set(gcf,'position',[150 150 v.Width v.Height]);
+% set(gca,'units','pixels');
+% set(gca,'position',[0 0 v.Width v.Height]);
 
 % F = getframe;
 % plot(rand(5))
-movie(mov,1,v.FrameRate);
+% movie(mov,1,v.FrameRate);
 
-close
+% close
 
 %% Display frames
 %% Frame 450 (or try 460)
@@ -67,22 +68,36 @@ close
 
 %% Frame at 15 secs in video (same as above Frame 450)
 v.CurrentTime = 15;
-imageData = readFrame(v);
+currAxes = axes;
+theFrame = readFrame(v);
 
 %% RGB of pixel col 1 row 2
-zz = impixel(imageData,1,2);
+% zz = impixel(imageData,1,2);
 % zzz = impixel(thisFrame,1,2);
 %% zz and zzz are equivalent
 
 % imshow(imageData);
 
-rChannel = imageData(:,:,1);
-bChannel = imageData(:,:,2);
-gChannel = imageData(:,:,3);
+R = theFrame(:,:,1);
+B = theFrame(:,:,2);
+G = theFrame(:,:,3);
 
-% imagesc(rChannel);
-% imagesc(bChannel);
-% imagesc(gChannel);
+%% Alternative
+%% Red Bird
+image(theFrame, 'Parent', currAxes);
+slice = theFrame(90:110,60:80,:);
+result = (R>117 & R< 219) .* (G < 89) .* (B > 13 & B < 116);
+figure(),imagesc(result);
+M = zeros(size(result);
+if result == 1
+    M = 1;
+
+
+
+
+% imagesc(R);
+% imagesc(B);
+% imagesc(G);
 
 %% make copy as grayscale, canny edge detection, compare with original R channel
 % grayImage = rgb2gray(imageData);
@@ -126,10 +141,10 @@ gChannel = imageData(:,:,3);
 % title("Sobel Edge");
 
 %% "Crop" the bird/pig, get their location (row/col)
-bird_rCh = rChannel(80:120,50:100);
+bird_rCh = R(80:120,50:100);
 % imagesc(bird_rCh);
 
-bird_canny = grayImage(80:120,50:100);
+% bird_canny = grayImage(80:120,50:100);
 % imagesc(bird_canny);
 
 % measurements = regionprops(logical(bird_canny), 'BoundingBox');
@@ -137,10 +152,10 @@ bird_canny = grayImage(80:120,50:100);
 % hold on;
 % rectangle('Position', bBox, 'EdgeColor', 'r');
 
-figure();
-imagesc(imageData);
-% hold on
-rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
+% figure();
+% imagesc(imageData);
+% % hold on
+% rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
 
 %% alt: histogram 
 %% sliding window
@@ -159,6 +174,7 @@ rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
 % 		sum of total redCh
 
 % redThr = rChannel > 220;
+
 % for row = 1 : size(rChannel,1)
 %     for col = 1 : size(rChannel,2)
 %         pix = rChannel(row,col);
@@ -170,60 +186,61 @@ rectangle('Position', [60, 80, 30, 30], 'EdgeColor','r', 'LineWidth', 3)
 % end
 
 % imagesc(rChannel)
-[nRows, nCols] = size(rChannel);
-result            = zeros(nRows, nCols);
-halfWinSize       = 2; 
-threshold         = 220;
-
-for rI = 1:nRows
-    for cI = 1:nCols
-        % These indices specify the start and stop indices of the
-        % window. The window will go from row rILo to rIHi amd column
-        % cILo to cIHi
-        rILo               = rI - halfWinSize; % lower row index of window
-        rIHi               = rI + halfWinSize; % upper row index of window
-        cILo               = cI - halfWinSize; % lower column index of window
-        cIHi               = cI + halfWinSize; % upper column index of window
-        flagConditionMet = false ;
-        count = 1;
-
-          % while success criteria unmet
-          while( ~ flagConditionMet )
-          % It is important to make sure that your window indices are valid
-          % indices before pulling out the window.            
-              if( rILo >= 1 && rIHi <= nRows && cILo >= 1 && cIHi <= nCols )
-
-                  % Pull out the window around (rI , cI)
-                  imgWindow = img( (rILo : rIHi) , (cILo : cIHi) ); 
-
-                  %perform an operation
-                  minVal = min( imgWindow(:) );
-
-                  %check if successful
-                  flagConditionMet = minVal < threshold;
-
-                  %increase window bounds if unsuccessful   
-                  if( ~ flagConditionMet )                  
-                      rILo = rILo - 1;
-                      rIHi = rIHi + 1;
-                      cILo = cILo - 1;
-                      cIHi = cIHi + 1;
-                      count = count + 1;
-                  else
-                      %store some result if successful
-                      result( rI , cI ) = count;                    
-                  end
-
-              else 
-                  % out of bounds break out of while loop
-                  break; 
-              end
-          end
-      end
-  end
-
-figure;
-imshow(result./max( result(:) ))
+% [nRows, nCols] = size(rChannel);
+% result            = zeros(nRows, nCols);
+% halfWinSize       = 2; 
+% threshold         = 220;
+% 
+% for rI = 1:nRows
+%     for cI = 1:nCols
+%         % These indices specify the start and stop indices of the
+%         % window. The window will go from row rILo to rIHi amd column
+%         % cILo to cIHi
+%         rILo               = rI - halfWinSize; % lower row index of window
+%         rIHi               = rI + halfWinSize; % upper row index of window
+%         cILo               = cI - halfWinSize; % lower column index of window
+%         cIHi               = cI + halfWinSize; % upper column index of window
+%         flagConditionMet = false ;
+%         count = 1;
+% 
+%           % while success criteria unmet
+%           while( ~ flagConditionMet )
+%           % It is important to make sure that your window indices are valid
+%           % indices before pulling out the window.            
+%               if( rILo >= 1 && rIHi <= nRows && cILo >= 1 && cIHi <= nCols )
+% 
+%                   % Pull out the window around (rI , cI)
+%                   imgWindow = rChannel( (rILo : rIHi) , (cILo : cIHi) ); 
+% 
+%                   %perform an operation
+%                   minVal = min( imgWindow(:) );
+% 
+%                   %check if successful
+%                   flagConditionMet = minVal < threshold;
+% 
+%                   %increase window bounds if unsuccessful   
+%                   if( ~ flagConditionMet )                  
+%                       rILo = rILo - 1;
+%                       rIHi = rIHi + 1;
+%                       cILo = cILo - 1;
+%                       cIHi = cIHi + 1;
+%                       count = count + 1;
+%                   else
+%                       %store some result if successful
+%                       result( rI , cI ) = count;                    
+%                   end
+% 
+%               else 
+%                   % out of bounds break out of while loop
+%                   break; 
+%               end
+%           end
+%       end
+%   end
+% 
+% figure;
+% imshow(result./max( result(:) ));
+% imagesc(result);
 
 % count = 0; % Remembers total count of pixels greater than threshold
 % val = 220; % Threshold value
