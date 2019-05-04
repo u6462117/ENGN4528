@@ -8,7 +8,7 @@ v = VideoReader('Angry Birds In-game Trailer.avi');
 % v.currentTime = 26; %Blue bird
 % v.currentTime = 31; %Yellow bird
 % v.currentTime = 39; %Black bird and pigs
- v.currentTime = 46; %White bird
+%  v.currentTime = 46; %White bird
 
 theFrame = readFrame(v);
 
@@ -34,15 +34,24 @@ grenPigs = detectGreenPigs(theFrame);
 
 %% Display
 
-figure();
-imshow(theFrame); hold on;
+v.CurrentTime = 1;
 
-DrawRectangles(redBirds, 'red');
-DrawRectangles(bluBirds, 'blue');
-DrawRectangles(yelBirds, 'yellow');
-DrawRectangles(blkBirds, 'black');
-DrawRectangles(whtBirds, 'white');
-DrawRectangles(grenPigs, 'green');
+while v.hasFrame
+    
+    figure();
+    imshow(theFrame); hold on;
+    
+    DrawRectangles(redBirds, 'red');
+    DrawRectangles(bluBirds, 'blue');
+    DrawRectangles(yelBirds, 'yellow');
+    DrawRectangles(blkBirds, 'black');
+    DrawRectangles(whtBirds, 'white');
+    DrawRectangles(grenPigs, 'green');
+   
+    
+    v.CurrentTime = v.CurrentTime + 1;
+    
+end
 
 
 function [] = DrawRectangles(birdsOrPigs, col)
