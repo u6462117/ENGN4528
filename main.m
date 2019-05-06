@@ -9,6 +9,7 @@ boxY = 20;
 Xdot = 10; %pixels per sec
 Ydot = 10; %pixels per sec
 dt = 1; %seconds
+scl = 1;
 
 %% Make some example frames
 
@@ -18,11 +19,10 @@ dt = 1; %seconds
 
 %% Convert coordinates
 
-[x1,y1,x2,y2] = ConvertFrames(x1,y1,x2,y2,Xdot,Ydot,dt);
+[x2,y2] = ConvertFrames(x2,y2,Xdot,Ydot,dt,scl);
 
 %% Find the quadratic represented by these points
 
-%[a,b,c] = FindQuadratic(x1, y1, x2, y2, x3, y3);
 [x,y] = FindQuadraticVel(x2, y2, x3, y3, dt);
 
 %% Plot
@@ -60,29 +60,28 @@ frame = uint8(255 * frame);
 end
 
 
-function [a,b,c] = FindQuadratic(x1, y1, x2, y2, x3, y3)
+% function [a,b,c] = FindQuadratic(x1, y1, x2, y2, x3, y3)
+% 
+% a = NaN; b = NaN; c = NaN;
+% 
+% xDiff12 = x1 - x2; yDiff12 = y1 - y2;
+% xDiff13 = x1 - x3; yDiff13 = y1 - y3;
+% 
+% if abs(xDiff12) > 1 && abs(xDiff13) > 1 %Box has moved
+%     
+%     a = 1/(x2 - x3) * (yDiff12/xDiff12 - yDiff13/xDiff13);
+%     b = yDiff13/xDiff13 - a * (x1 + x3);
+%     c = y3 - a * x3^2 - b * x3;
+% 
+% end
+% 
+% end
 
-a = NaN; b = NaN; c = NaN;
+function [x,y] = ConvertFrames(x,y,Xdot,Ydot,dt,scl)
 
-xDiff12 = x1 - x2; yDiff12 = y1 - y2;
-xDiff13 = x1 - x3; yDiff13 = y1 - y3;
 
-if abs(xDiff12) > 1 && abs(xDiff13) > 1 %Box has moved
-    
-    a = 1/(x2 - x3) * (yDiff12/xDiff12 - yDiff13/xDiff13);
-    b = yDiff13/xDiff13 - a * (x1 + x3);
-    c = y3 - a * x3^2 - b * x3;
-
-end
-
-end
-
-function [x1,y1,x2,y2] = ConvertFrames(x1,y1,x2,y2,Xdot,Ydot,dt)
-
-x1 = round(x1 - 2 * Xdot * dt);
-y1 = round(y1 - 2 * Ydot * dt);
-x2 = round(x2 - 1 * Xdot * dt);
-y2 = round(y2 - 1 * Ydot * dt);
+x = round(1/scl * (x - 1 * Xdot * dt));
+y = round(1/scl * (y - 1 * Ydot * dt));
 
 end
 
