@@ -1,16 +1,12 @@
-clearvars();
 close all;
+clearvars();
 
-v = VideoReader('Angry Birds In-game Trailer.avi');
+time = 15;
 
-frame1 = read(v, 440);
-frame2 = read(v, 445);
+while time < 60
+    
+    StitchFromTime(time, time + 0.5)
+    time = time + 1;
+    
+end
 
-[bw1, f1p] = RemoveBackground(frame1);
-[bw2, f2p] = RemoveBackground(frame2);
-
-figure();
-imagesc(f1p);
-
-figure();
-imagesc(f2p);

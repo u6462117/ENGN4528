@@ -1,4 +1,4 @@
-function [MOVINGREG] = StitchThese(MOVING,FIXED)
+function [MOVINGREG] = FindCorrespondences(MOVING,FIXED)
 %registerImages  Register grayscale images using auto-generated code from Registration Estimator app.
 %  [MOVINGREG] = registerImages(MOVING,FIXED) Register grayscale images
 %  MOVING and FIXED using auto-generated code from the Registration
@@ -37,7 +37,7 @@ MOVINGREG.FixedMatchedFeatures = fixedMatchedPoints;
 MOVINGREG.MovingMatchedFeatures = movingMatchedPoints;
 
 % Apply transformation - Results may not be identical between runs because of the randomized nature of the algorithm
-tform = estimateGeometricTransform(movingMatchedPoints,fixedMatchedPoints,'affine');
+tform = estimateGeometricTransform(movingMatchedPoints,fixedMatchedPoints,'similarity');
 MOVINGREG.Transformation = tform;
 MOVINGREG.RegisteredImage = imwarp(MOVING, movingRefObj, tform, 'OutputView', fixedRefObj, 'SmoothEdges', true);
 
