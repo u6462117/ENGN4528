@@ -1,4 +1,4 @@
-function [recs] = detectSlingshot(vidFrame)
+function [boolSlingshotFound, recs] = detectSlingshot(vidFrame)
 % R = vidFrame(:,:,1);
 % G = vidFrame(:,:,2);
 % B = vidFrame(:,:,3);
@@ -66,7 +66,8 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
 %     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
 %     (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
 
-thresh = 30; % 30 for RGB % 90 for LAB, only detects in scene with black bird
+thresh = 50; % 30 for RGB % 90 for LAB, only detects in scene with black bird
+
 
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);
@@ -85,6 +86,8 @@ for slingshot = 1:length(slingshotFound)
     
     recs{1,slingshot} = [topCol topRow  pixWid pixHgt];
 end
+
+boolSlingshotFound = ~isempty(slingshotFound);
 
 
 end
