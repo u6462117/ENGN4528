@@ -1,12 +1,33 @@
+% Not HSV
 function [recs] = detectWhiteBird(vidFrame)
-R = vidFrame(:,:,1);
-G = vidFrame(:,:,2);
-B = vidFrame(:,:,3);
+% R = vidFrame(:,:,1);
+% G = vidFrame(:,:,2);
+% B = vidFrame(:,:,3);
+% 
+% result = (R  > 230) .* (G > 230) .* (B > 230);
 
-result = (R  > 230) .* (G > 230) .* (B > 230);
+% Convert RGB image to chosen color space
+I = vidFrame;
 
-thresh = 30;
-upThresh = 100;
+% Define thresholds for channel 1 based on histogram settings
+channel1Min = 240.000;
+channel1Max = 255.000;
+
+% Define thresholds for channel 2 based on histogram settings
+channel2Min = 242.000;
+channel2Max = 255.000;
+
+% Define thresholds for channel 3 based on histogram settings
+channel3Min = 229.000;
+channel3Max = 255.000;
+
+% Create mask based on chosen histogram thresholds
+result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
+    (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
+    (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
+
+thresh = 50; 
+upThresh = 105;
 
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);

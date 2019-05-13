@@ -17,10 +17,10 @@ for bird = 1:length(birdsFound)
     pixels = birdsFound{bird};
     [rows, cols] = ind2sub(size(vidFrame), pixels);
     
-    topRow = min(rows) - 10;
-    topCol = min(cols) - 10;
-    pixWid = max(cols) - min(cols) + 20;
-    pixHgt = max(rows) - min(rows) + 20;
+    topRow = min(rows) - 15;
+    topCol = min(cols) - 15;
+    pixWid = max(cols) - min(cols) + 25;
+    pixHgt = max(rows) - min(rows) + 25;
     
     recs{1,bird} = [topCol topRow  pixWid pixHgt];
 end

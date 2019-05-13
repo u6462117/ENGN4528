@@ -1,15 +1,32 @@
+%% Try other than hsv
 function [recs] = detectYellowBird(vidFrame)
-R = vidFrame(:,:,1);
-G = vidFrame(:,:,2);
-B = vidFrame(:,:,3);
+% Convert RGB image to chosen color space
+I = rgb2hsv(vidFrame);
 
-result = (R > 200 & R < 255) .* (G > 180 & G < 235) .* (B > 0 & B < 100);
+% Define thresholds for channel 1 based on histogram settings
+channel1Min = 0.136;
+channel1Max = 0.199;
 
-thresh = 50;
+% Define thresholds for channel 2 based on histogram settings
+channel2Min = 0.304;
+channel2Max = 1.000;
+
+% Define thresholds for channel 3 based on histogram settings
+channel3Min = 0.000;
+channel3Max = 1.000;
+
+% Create mask based on chosen histogram thresholds
+result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
+    (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
+    (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
+
+thresh = 190;
+upThresh = 400;
+
 
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);
-birdsFound  = CC.PixelIdxList(val>thresh);
+birdsFound  = CC.PixelIdxList(val > thresh & val < upThresh);
 
 recs = cell(1,length(birdsFound));
 
