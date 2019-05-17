@@ -19,6 +19,15 @@ recs = DrawRectangles(blkBirds, 'black', recs);
 whtBirds = detectWhiteBird(currFrame);
 recs = DrawRectangles(whtBirds, 'white', recs);
 
+grenPigs = detectGreenPigs(currFrame);
+recs = DrawRectangles(grenPigs, 'green', recs);
+
+[slingshotFound, slingshot] = detectSlingshot(currFrame);
+
+if slingshotFound
+    recs = DrawRectangles(slingshot, 'magenta', recs);
+end
+
 hold off;
 pause(0.1);
 delete(recs);

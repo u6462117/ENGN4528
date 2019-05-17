@@ -24,13 +24,15 @@ while hasFrame(v)
     currFrame = readFrame(v);
     
     %% Slingshot detection
+    [flagSlingshotDetected,slingshotLoc] = detectSlingshot(currFrame); 
+    %need to keep updating position as slingshot moves in initial pan
     if flagSlingshotDetected
         newScene = true;
         %Define the watch path
         rec = slingshotLoc{1};
-        topRight = [rec(1), rec(2) + rec(4)];
-        watchMe = currFrame(topRight(1):topRight(1)+20, topRight(2):topRight(2)+20);
-        
+        topRight = [rec(1) + rec(3), rec(2)];
+%         watchMe = currFrame(topRight(1)-20:topRight(1), topRight(2)-rec(4):topRight(2)+rec(4));
+
     else
         flagTimeSlingshot = time;
         [flagSlingshotDetected,slingshotLoc] = detectSlingshot(currFrame);
@@ -39,12 +41,12 @@ while hasFrame(v)
     
     
     if flagSlingshotDetected && newScene 
-        
-        watchPatch = currFrame(topRight(1):topRight(1)+20, topRight(2):topRight(2)+20);
-        
-        if sum(abs(watchMe - watchPatch).^2,'all') > 10
+        checkArea = currFrame( rec(2)-80:rec(2) -20,rec(1) + rec(3) :rec(1) + rec(3) + 75,:);
+        if ~isempty(detectRedBird(checkArea))
+%         watchPatch = currFrame(topRight(1)-20:topRight(1), topRight(2)-rec(4):topRight(2)+rec(4));
+%         if sum(abs(watchMe - watchPatch).^2,'all') > 1
             flagBirdlaunched = true;
-            
+            "RED BIRD DETECTED"
             %Find bird type
             %birdType = ;
         end
@@ -65,6 +67,13 @@ while hasFrame(v)
     time = time + 0.1;
     v.CurrentTime = time;
     prevFrame = currFrame;
+    
+    
+%     if flagSlingshotDetected
+%         currentRec = rectangle('Position',rec,'EdgeColor','magenta', 'LineWidth',2);
+%         pause(0.1);
+%         delete(currentRec);
+%     end
     
 end
 
