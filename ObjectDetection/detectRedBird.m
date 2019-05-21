@@ -11,7 +11,7 @@ CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);
 birdsFound  = CC.PixelIdxList(val>thresh);
 
-recs = cell(1,length(birdsFound));
+recs = cell(1,0);
 
 for bird = 1:length(birdsFound)
     pixels = birdsFound{bird};
@@ -22,7 +22,11 @@ for bird = 1:length(birdsFound)
     pixWid = max(cols) - min(cols) + 20;
     pixHgt = max(rows) - min(rows) + 20;
     
-    recs{1,bird} = [topCol topRow  pixWid pixHgt];
+    %Remove objects that don't meet the expected aspect ratio of the
+    %bird
+    if 0.7 < pixHgt/pixWid && 1.3 > pixHgt/pixWid
+        recs{1,end+1} = [topCol topRow  pixWid pixHgt];
+    end
 end
 
 

@@ -41,14 +41,35 @@ while hasFrame(v)
     
     
     if flagSlingshotDetected && newScene 
-        checkArea = currFrame( rec(2)-80:rec(2) -20,rec(1) + rec(3) :rec(1) + rec(3) + 75,:);
+        checkArea = currFrame( rec(2)-80:rec(2) +20,rec(1) + rec(3) :rec(1) + rec(3) + 125,:);
+        figure(2)
+        imshow(checkArea)
+        figure(1)
         if ~isempty(detectRedBird(checkArea))
-%         watchPatch = currFrame(topRight(1)-20:topRight(1), topRight(2)-rec(4):topRight(2)+rec(4));
-%         if sum(abs(watchMe - watchPatch).^2,'all') > 1
             flagBirdlaunched = true;
             "RED BIRD DETECTED"
             %Find bird type
-            %birdType = ;
+            birdType = 'red';
+        elseif ~isempty(detectBlueBird(checkArea))
+            flagBirdlaunched = true;
+            "BLUE BIRD DETECTED"
+            %Find bird type
+            birdType = 'blue';
+        elseif ~isempty(detectYellowBird(checkArea))
+            flagBirdlaunched = true;
+            "YELLOW BIRD DETECTED"
+            %Find bird type
+            birdType = 'yellow';
+        elseif ~isempty(detectBlackBird(checkArea))
+            flagBirdlaunched = true;
+            "BLACK BIRD DETECTED"
+            %Find bird type
+            birdType = 'black';
+        elseif ~isempty(detectWhiteBird(checkArea))
+            flagBirdlaunched = true;
+            "WHITE BIRD DETECTED"
+            %Find bird type
+            birdType = 'white';
         end
     end
     

@@ -111,8 +111,8 @@ for slingshot = 1:length(slingshotFound)
 
     %Remove objects that don't meet the expected aspect ratio of the
     %slingshot
-    if 54/20 < pixHgt/pixWid && 58/20 > pixWid/pixHgt        
-        if 15<pixWid && 50>pixWid
+    if 54/20 < pixHgt/pixWid && 68/20 > pixHgt/pixWid        
+        if 15<pixWid && 500>pixWid
             recs{1,end+1} = [topCol topRow  pixWid pixHgt];
         end
     end
