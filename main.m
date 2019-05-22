@@ -26,7 +26,7 @@ pano = NaN;
 
 figure();
 
-while time < 20
+while time < 66.1
     %% Setup
     currFrame = readFrame(v);
     
