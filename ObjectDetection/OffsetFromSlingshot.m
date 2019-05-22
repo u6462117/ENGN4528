@@ -1,6 +1,6 @@
 function [watchBoxNow] = OffsetFromSlingshot(slingshotLoc, currFrame)
 
-    rec = slingshotLoc;
+    rec = slingshotLoc{1};
     
     try
         watchBoxNow = ...

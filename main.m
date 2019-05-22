@@ -38,6 +38,7 @@ while time < 66.1
         
         %If slingshot found, declare Watch Box.
         if slingshotFound
+            birdFlying = false;
             slingshotDetectTime = time;
             watchBoxStruct = GetWatchBoxFromSlingshot(slingshotLoc, currFrame);
             prompt = 'All';

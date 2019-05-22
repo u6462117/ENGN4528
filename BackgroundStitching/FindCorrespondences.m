@@ -11,7 +11,7 @@ function [MOVINGREG] = FindCorrespondences(MOVING,FIXED)
 
 
 % Feature-based techniques require license to Computer Vision Toolbox
-checkLicense()
+% checkLicense()
 
 % Convert RGB images to grayscale
 FIXED = rgb2gray(FIXED);

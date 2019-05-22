@@ -63,42 +63,71 @@ function [recs] = DrawBoxesAndTraj(prompt, currFrame, prevFrame)
     
     recs = [];
     
+%     if      strcmp(prompt, 'Red')
+%         redBirds = detectRedBird(currFrame);
+%         recs = DrawRectangles(redBirds, 'red', recs);
+%         
+%     elseif  strcmp(prompt, 'Yellow')
+%         yelBirds = detectYellowBird(currFrame);
+%         recs = DrawRectangles(yelBirds, 'yellow', recs);
+%         
+%     elseif  strcmp(prompt, 'White')
+%         whtBirds = detectWhiteBird(currFrame);
+%         recs = DrawRectangles(whtBirds, 'white', recs);
+%         
+%     elseif  strcmp(prompt, 'Blue')
+%         bluBirds = detectBlueBird(currFrame);
+%         recs = DrawRectangles(bluBirds, 'blue', recs);
+%         
+%     elseif  strcmp(prompt, 'Black')
+%         blkBirds = detectBlackBird(currFrame);
+%         recs = DrawRectangles(blkBirds, 'black', recs);
+%         
+%     end
+%     
+%     %pigs
+%     grenPigs = detectGreenPigs(currFrame);
+%     recs = DrawRectangles(grenPigs, 'green', recs);
+    
     if      strcmp(prompt, 'Red')
-        redBirds = detectRedBird(currFrame);
-        recs = DrawRectangles(redBirds, 'red', recs);
+        bird = detectRedBird(currFrame);
+        recs = DrawRectangles(bird, 'red', recs);
         
     elseif  strcmp(prompt, 'Yellow')
-        yelBirds = detectYellowBird(currFrame);
-        recs = DrawRectangles(yelBirds, 'yellow', recs);
+        bird = detectYellowBird(currFrame);
+        recs = DrawRectangles(bird, 'yellow', recs);
         
     elseif  strcmp(prompt, 'White')
-        whtBirds = detectWhiteBird(currFrame);
-        recs = DrawRectangles(whtBirds, 'white', recs);
+        bird = detectWhiteBird(currFrame);
+        recs = DrawRectangles(bird, 'white', recs);
         
     elseif  strcmp(prompt, 'Blue')
-        bluBirds = detectBlueBird(currFrame);
-        recs = DrawRectangles(bluBirds, 'blue', recs);
+        bird = detectBlueBird(currFrame);
+        recs = DrawRectangles(bird, 'blue', recs);
         
     elseif  strcmp(prompt, 'Black')
-        blkBirds = detectBlackBird(currFrame);
-        recs = DrawRectangles(blkBirds, 'black', recs);
+        bird = detectBlackBird(currFrame);
+        recs = DrawRectangles(bird, 'black', recs);
         
     end
     
     %pigs
     grenPigs = detectGreenPigs(currFrame);
     recs = DrawRectangles(grenPigs, 'green', recs);
+
     
     %
-    if ~isempty(redBirds)
-        bird = redBirds{1};
-        
-        movingReg = FindCorrespondences(prevFrame, currFrame);
-        T = movingReg.Transformation.T;
-        [trajX, trajY] = FindQuadratic(bird, T);
-        fhand = plot(trajX, trajY);
-        
-        recs = [recs, fhand];
+    if ~isempty(bird)
+        bird = bird{1};
+        try
+            movingReg = FindCorrespondences(prevFrame, currFrame);
+            T = movingReg.Transformation.T;
+            [trajX, trajY] = FindQuadratic(bird, T);
+            fhand = plot(trajX, trajY);
+            
+            recs = [recs, fhand];
+        catch
+        end
     end
 
     
