@@ -53,6 +53,7 @@ while hasFrame(v)
         elseif ~isempty(detectBlueBird(checkArea))
             flagBirdlaunched = true;
             "BLUE BIRD DETECTED"
+            keyboard();
             %Find bird type
             birdType = 'blue';
         elseif ~isempty(detectYellowBird(checkArea))

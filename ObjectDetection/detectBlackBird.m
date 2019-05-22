@@ -1,18 +1,18 @@
 function [recs] = detectBlackBird(vidFrame)
 % Convert RGB image to chosen color space
-I = rgb2lab(vidFrame);
+I = vidFrame;
 
 % Define thresholds for channel 1 based on histogram settings
 channel1Min = 0.000;
-channel1Max = 85.325;
+channel1Max = 103.000;
 
 % Define thresholds for channel 2 based on histogram settings
-channel2Min = -13.786;
-channel2Max = 15.074;
+channel2Min = 0.000;
+channel2Max = 107.000;
 
 % Define thresholds for channel 3 based on histogram settings
-channel3Min = -4.769;
-channel3Max = 62.116;
+channel3Min = 0.000;
+channel3Max = 115.000;
 
 % Create mask based on chosen histogram thresholds
 result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
@@ -39,7 +39,9 @@ for bird = 1:length(birdsFound)
     %Remove objects that don't meet the expected aspect ratio of the
     %bird
     if 0.7 < pixHgt/pixWid && 1.3 > pixHgt/pixWid
-        recs{1,end+1} = [topCol topRow  pixWid pixHgt];
+        if pixWid <80 %determined empirically
+            recs{1,end+1} = [topCol topRow  pixWid pixHgt];
+        end
     end
 end
 
