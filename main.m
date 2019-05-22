@@ -26,7 +26,7 @@ pano = NaN;
 
 figure();
 
-while hasFrame(v)
+while time < 20
     %% Setup
     currFrame = readFrame(v);
     
@@ -76,7 +76,7 @@ while hasFrame(v)
     
     %% Tidy Up
     time = time + dt;
-    if time < 20
+    if time < 62
         v.CurrentTime = time;
     end
     prevFrame = currFrame;

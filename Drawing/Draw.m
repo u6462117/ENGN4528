@@ -1,10 +1,12 @@
 function [] = Draw(prompt, currFrame, prevFrame)
 
     if strcmp(prompt, 'All')
+        cla('reset');
         imshow(currFrame);
         recs = DrawAllBoxes(currFrame);
         
     elseif strcmp(prompt, 'None')
+        cla('reset');
         imshow(currFrame);
         
     else
@@ -18,7 +20,7 @@ function [] = Draw(prompt, currFrame, prevFrame)
 %         recs = DrawRectangles(ssl, 'magenta', recs);
 %     end
     
-    pause(0.1);
+    pause(0.03);
     if exist('recs', 'var')
         delete(recs);
     end
@@ -93,7 +95,7 @@ function [recs] = DrawBoxesAndTraj(prompt, currFrame, prevFrame)
         
         movingReg = FindCorrespondences(prevFrame, currFrame);
         T = movingReg.Transformation.T;
-        [trajX, trajY] = PlotQuadratic(bird, T);
+        [trajX, trajY] = FindQuadratic(bird, T);
         fhand = plot(trajX, trajY);
         
         recs = [recs, fhand];
