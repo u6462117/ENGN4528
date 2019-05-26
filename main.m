@@ -1,8 +1,6 @@
 close all;
 clearvars();
-global pano;
 v = VideoReader("Angry Birds In-game Trailer.avi");
-
 
 %% Variables
 test = false;
@@ -20,11 +18,12 @@ stitch = false;
 watchBoxStruct = struct('Location', NaN(1,4), 'Memory', NaN(10,10));
 prevFrame = NaN;
 prompt = 'None';
-pano = NaN;
+plotOverlays = [];
 
 %% Main Loop
 
 figure();
+h = imshow(readFrame(v));
 
 while time < 66.1
     %% Setup
@@ -73,7 +72,8 @@ while time < 66.1
     
     
     %% Draw New Frame
-    Draw(prompt, currFrame, prevFrame);
+    delete(plotOverlays);
+    plotOverlays = Draw(prompt, currFrame, prevFrame, h);
     
     %% Tidy Up
     time = time + dt;

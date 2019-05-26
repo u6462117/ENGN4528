@@ -11,6 +11,6 @@ function [watchBoxNow] = OffsetFromSlingshot(slingshotLoc, currFrame)
     end
     
     
-    imshow(currFrame);
-    rectangle('Position', rec);
+%     imshow(currFrame);
+%     rectangle('Position', rec);
 end
