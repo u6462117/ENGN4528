@@ -1,4 +1,4 @@
-function [recs] = Draw(prompt, currFrame, prevFrame, h)
+function [recs, movingRegs] = Draw(prompt, currFrame, prevFrame, h, movingRegs)
 
     recs = [];
 
@@ -14,7 +14,7 @@ function [recs] = Draw(prompt, currFrame, prevFrame, h)
 %         imshow(currFrame);
         
     else
-        recs = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h);
+        [recs, movingRegs] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h, movingRegs);
         
     end
     
@@ -51,7 +51,7 @@ recs = DrawRectangles(whtBirds, 'white', recs);
 
 end
 
-function [recs] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h)
+function [recs, movingRegs] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h, movingRegs)
     
 %     imshow(currFrame);
     set(h,'Cdata',currFrame);
@@ -89,7 +89,29 @@ function [recs] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h)
     if ~isempty(bird)
         bird = bird{1};
         
-        
+        try
+           cMR = FindCorrespondences(prevFrame, currFrame); 
+           
+           movingRegs = [movingRegs, cMR];
+           
+           if length(movingRegs) > 2
+               
+               
+               movingRegs = movingRegs(2:end);
+               
+               TComb = eye(3);
+               for i = 1:2
+                   TComb = TComb * movingRegs(i).T;
+               end
+               
+               fhand = plot(trajX, trajY);
+               recs = [recs, fhand];
+               
+           end
+            
+        catch
+            
+        end
         
 %         try
 %             movingReg = FindCorrespondences(prevFrame, currFrame);

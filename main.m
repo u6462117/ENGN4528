@@ -19,6 +19,7 @@ watchBoxStruct = struct('Location', NaN(1,4), 'Memory', NaN(10,10));
 prevFrame = NaN;
 prompt = 'None';
 plotOverlays = [];
+movingRegs = [];
 
 %% Main Loop
 
@@ -73,7 +74,7 @@ while time < 66.1
     
     %% Draw New Frame
     delete(plotOverlays);
-    plotOverlays = Draw(prompt, currFrame, prevFrame, h);
+    plotOverlays = Draw(prompt, currFrame, prevFrame, h, movingRegs);
     
     %% Tidy Up
     time = time + dt;
