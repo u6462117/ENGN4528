@@ -77,6 +77,10 @@ while time < 66.1
     
     
     %% Draw New Frame
+    if time > 60
+       prompt = 'None'; 
+    end
+    
     delete(plotOverlays);
     [plotOverlays, memory] = Draw(prompt, currFrame, prevFrame, h, time, memory);
     
