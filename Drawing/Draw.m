@@ -18,11 +18,10 @@ function [recs, memory] = Draw(prompt, currFrame, prevFrame, h,time, memory)
         
     end
     
-%     imshow(currFrame);
-%     [ssf, ssl] = detectSlingshot(currFrame);
-%     if ssf
-%         recs = DrawRectangles(ssl, 'magenta', recs);
-%     end
+    [ssf, ssl] = detectSlingshot(currFrame);
+    if ssf
+        recs = DrawRectangles(ssl, 'magenta', recs);
+    end
     
 end
 

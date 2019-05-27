@@ -67,7 +67,9 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
     (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
 
-
+% % %% Close image
+% % se = strel('disk',7);
+% % result = imclose(result,se);
 
 % %% LAB
 % I = rgb2lab(vidFrame);
@@ -111,7 +113,7 @@ for slingshot = 1:length(slingshotFound)
 
     %Remove objects that don't meet the expected aspect ratio of the
     %slingshot
-    if 54/20 < pixHgt/pixWid && 68/20 > pixHgt/pixWid        
+    if (54/20 < pixHgt/pixWid && 68/20 > pixHgt/pixWid) || (55/30 < pixHgt/pixWid && 60/30 > pixHgt/pixWid)  
         if 15<pixWid && 500>pixWid
             recs{1,end+1} = [topCol topRow  pixWid pixHgt];
         end
@@ -124,6 +126,7 @@ if isempty(recs)
 elseif isempty(recs{1,1})
     boolSlingshotFound = 0;
 else
+    if 
     boolSlingshotFound = 1;
 end
 

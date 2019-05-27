@@ -1,12 +1,17 @@
 % Not HSV
 function [recs] = detectWhiteBird(vidFrame)
 %% Remove bottom half of frame
-vidFrameCropped = [vidFrame(1:round(size(vidFrame,1)/2),1:end,:);zeros(round(size(vidFrame,1)/2),size(vidFrame,2),3)];
+vidFrame(round(size(vidFrame,1)/2):end,80:end) = 0;
+
+%% Remove pause and score
+vidFrame(1:65,1:65) = 0;
+vidFrame(1:50,320:end) = 0;
+vidFrame(260:end,422:end) = 0;
 
 %% Mask for white feathers
 
 % Convert RGB image to chosen color space
-I = rgb2ycbcr(vidFrameCropped);
+I = rgb2ycbcr(vidFrame);
 
 % Define thresholds for channel 1 based on histogram settings
 channel1Min = 207.000;
@@ -29,7 +34,7 @@ whiteResult = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
 %% Mask for beak colours
 
 % Convert RGB image to chosen color space
-I = vidFrameCropped;
+I = vidFrame;
 
 % Define thresholds for channel 1 based on histogram settings
 channel1Min = 211.000;

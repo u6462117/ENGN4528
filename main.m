@@ -66,6 +66,7 @@ while time < 66.1
                 mainBird = FindMainBird(watchBoxNow);                
                 birdFlying = true;
                 prompt = mainBird;
+                disp(mainBird);
                 
             end
             
@@ -87,3 +88,5 @@ while time < 66.1
     prevFrame = currFrame;
 
 end
+
+delete(plotOverlays);
