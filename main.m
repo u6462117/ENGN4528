@@ -1,13 +1,13 @@
 close all;
 clearvars();
 v = VideoReader("Angry Birds In-game Trailer.avi");
-% w = warning ('off','all');
+w = warning ('off','all');
 
 %% Variables
 test = false;
 
 %time
-time = 10;
+time = 55;
 dt = 0.1;
 slingshotTimeout = 7;
 slingshotDetectTime = -9999;
@@ -32,7 +32,15 @@ h = imshow(readFrame(v));
 while time < 66.1
     %% Setup
     currFrame = readFrame(v);
-    
+    %draw watchbox in a separate figure
+    if exist('watchBoxNow')
+    if ~isnan(watchBoxNow)
+        figure(2)
+        imshow(watchBoxNow)
+        drawnow
+        figure(1)
+    end
+    end
     %% Mode Identifiaction
     if (time - slingshotDetectTime) > slingshotTimeout
         

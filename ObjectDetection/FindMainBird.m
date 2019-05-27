@@ -17,9 +17,13 @@ function [mainBird] = FindMainBird(watchBoxNow)
     end
     
     %White
-    recs = detectWhiteBird(watchBoxNow);
-    if ~isempty(recs)
-        mainBird = 'White';
+    if(isempty(recs)) %yellow bird is sometimes identified as both yellow and white
+        %This stops the yellow bird from ending the function while
+        %classified as white
+        recs = detectWhiteBird(watchBoxNow);
+        if ~isempty(recs)
+            mainBird = 'White';
+        end
     end
     
     %Blue 
