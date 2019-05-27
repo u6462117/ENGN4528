@@ -7,7 +7,7 @@ w = warning ('off','all');
 test = false;
 
 %time
-time = 55;
+time = 10;
 dt = 0.1;
 slingshotTimeout = 7;
 slingshotDetectTime = -9999;

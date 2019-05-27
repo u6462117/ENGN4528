@@ -57,6 +57,12 @@ for slingshot = 1:length(slingshotFound)
     end
     
 end
+if ~isempty(recs)
+    recsCheck = recs{1};
+    topCol = recsCheck(1);
+    topRow = recsCheck(2);
+    pixWid = recsCheck(3);
+end
 
 if isempty(recs)
     boolSlingshotFound = 0;
