@@ -37,22 +37,16 @@ MOVINGREG.FixedMatchedFeatures = fixedMatchedPoints;
 MOVINGREG.MovingMatchedFeatures = movingMatchedPoints;
 
 % Apply transformation - Results may not be identical between runs because of the randomized nature of the algorithm
-tform = estimateGeometricTransform(movingMatchedPoints,fixedMatchedPoints,'similarity');
-MOVINGREG.Transformation = tform;
-MOVINGREG.RegisteredImage = imwarp(MOVING, movingRefObj, tform, 'OutputView', fixedRefObj, 'SmoothEdges', true);
+try
+    tform = estimateGeometricTransform(movingMatchedPoints,fixedMatchedPoints,'similarity');
+    MOVINGREG.Transformation = tform;
+    MOVINGREG.RegisteredImage = imwarp(MOVING, movingRefObj, tform, 'OutputView', fixedRefObj, 'SmoothEdges', true);
+
+catch
+    MOVINGREG.Transformation = NaN;
+end
 
 % Store spatial referencing object
 MOVINGREG.SpatialRefObj = fixedRefObj;
 
 end
-
-function checkLicense()
-
-% Check for license to Computer Vision Toolbox
-CVSTStatus = license('test','Video_and_Image_Blockset');
-if ~CVSTStatus
-    error(message('images:imageRegistration:CVSTRequired'));
-end
-
-end
-

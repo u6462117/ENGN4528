@@ -1,4 +1,4 @@
-function [recs, movingRegs] = Draw(prompt, currFrame, prevFrame, h, movingRegs)
+function [recs, memory] = Draw(prompt, currFrame, prevFrame, h,time, memory)
 
     recs = [];
 
@@ -14,7 +14,7 @@ function [recs, movingRegs] = Draw(prompt, currFrame, prevFrame, h, movingRegs)
 %         imshow(currFrame);
         
     else
-        [recs, movingRegs] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h, movingRegs);
+        [recs, memory] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory);
         
     end
     
@@ -48,11 +48,15 @@ recs = DrawRectangles(blkBirds, 'black', recs);
 whtBirds = detectWhiteBird(currFrame);
 recs = DrawRectangles(whtBirds, 'white', recs);
 
+grenPigs = detectGreenPigs(currFrame);
+recs = DrawRectangles(grenPigs, 'green', recs);
+
 
 end
 
-function [recs, movingRegs] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h, movingRegs)
-    
+function [recs, memory] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory)
+
+
 %     imshow(currFrame);
     set(h,'Cdata',currFrame);
 
@@ -89,40 +93,71 @@ function [recs, movingRegs] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h, 
     if ~isempty(bird)
         bird = bird{1};
         
-        try
-           cMR = FindCorrespondences(prevFrame, currFrame); 
-           
-           movingRegs = [movingRegs, cMR];
-           
-           if length(movingRegs) > 2
-               
-               
-               movingRegs = movingRegs(2:end);
-               
-               TComb = eye(3);
-               for i = 1:2
-                   TComb = TComb * movingRegs(i).T;
-               end
-               
-               fhand = plot(trajX, trajY);
-               recs = [recs, fhand];
-               
-           end
-            
-        catch
-            
+        memory{end+1} = currFrame;
+        
+        if length(memory) > 10
+            memory = memory(2:end);
         end
         
-%         try
-%             movingReg = FindCorrespondences(prevFrame, currFrame);
-%             T = movingReg.Transformation.T;
-%             [trajX, trajY] = FindQuadratic(bird, T);
-%             fhand = plot(trajX, trajY);
+        [movingReg, TBetter] = FindBetterCorrespondences(memory{1}, currFrame);
+        if isa(movingReg.Transformation,'affine2d')
+            [trajX, trajY] = FindQuadratic(bird, TBetter, length(memory)*0.1);
+            fhand = plot(trajX, trajY);
+
+            recs = [recs, fhand];
+        end
+        
+%         if (time - lastTime > 0.4)
 %             
+%             if isempty(lastFrame)
+%                 lastFrame = currFrame;
+%             else
+%                 try
+%                     [movingReg,T] = FindBetterCorrespondences(lastFrame, currFrame);
+% %                     T = movingReg.Transformation.T;
+%                     [trajX, trajY] = FindQuadratic(bird, T, time - lastTime);
+%                     fhand = plot(trajX, trajY);
+%                     
+%                     recs = [recs, fhand];
+%                 catch
+%                     
+%                 end
+%             end
+%             
+%             lastTime = time;
+%         end
+        
+        
+%         cMR = FindCorrespondences(prevFrame, currFrame);
+%         
+%         movingRegs = [movingRegs, cMR];
+%         
+%         if length(movingRegs) > 6
+%             
+%             
+%             movingRegs = movingRegs(2:end);
+%             
+%             TComb = eye(3);
+%             for i = 1:6
+%                 TComb = TComb * movingRegs(i).Transformation.T;
+%             end
+%             
+%             [trajX, trajY] = FindQuadratic(bird, TComb);
+%             fhand = plot(trajX, trajY);
 %             recs = [recs, fhand];
-%         catch
 %             
 %         end
+            
+        
+
+%         [movingReg, TBetter] = FindBetterCorrespondences(prevFrame, currFrame);
+%         if isa(movingReg.Transformation,'affine2d')
+%             [trajX, trajY] = FindQuadratic(bird, TBetter, 0.1);
+%             fhand = plot(trajX, trajY);
+% 
+%             recs = [recs, fhand];
+%         end
+
     end
 
     

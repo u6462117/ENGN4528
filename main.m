@@ -1,6 +1,7 @@
 close all;
 clearvars();
 v = VideoReader("Angry Birds In-game Trailer.avi");
+% w = warning ('off','all');
 
 %% Variables
 test = false;
@@ -20,6 +21,8 @@ prevFrame = NaN;
 prompt = 'None';
 plotOverlays = [];
 movingRegs = [];
+
+memory = cell(1,0);
 
 %% Main Loop
 
@@ -60,7 +63,7 @@ while time < 66.1
                 
             else
                 
-                mainBird = FindMainBird(watchBoxNow);
+                mainBird = FindMainBird(watchBoxNow);                
                 birdFlying = true;
                 prompt = mainBird;
                 
@@ -74,7 +77,7 @@ while time < 66.1
     
     %% Draw New Frame
     delete(plotOverlays);
-    plotOverlays = Draw(prompt, currFrame, prevFrame, h, movingRegs);
+    [plotOverlays, memory] = Draw(prompt, currFrame, prevFrame, h, time, memory);
     
     %% Tidy Up
     time = time + dt;
