@@ -7,8 +7,7 @@ function [watchBoxNow] = OffsetFromSlingshot(slingshotLoc, currFrame)
             currFrame( rec(2)-80:rec(2) +20,rec(1) + rec(3) + 10 :rec(1) + rec(3) + 135,:);
     catch
 
-        watchBoxNow = ...
-            currFrame( rec(2)-50:end,rec(1) + rec(3) :min(rec(1) + rec(3) + 75,end),:);
+        watchBoxNow = NaN;
     end
     
     

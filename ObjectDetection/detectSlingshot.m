@@ -126,8 +126,11 @@ if isempty(recs)
 elseif isempty(recs{1,1})
     boolSlingshotFound = 0;
 else
-    if 
-    boolSlingshotFound = 1;
+    if (topRow + 20 < 320) && (topCol + pixWid + 135 < 480)
+        boolSlingshotFound = 1;
+    else
+        boolSlingshotFound = 0;
+    end
 end
 
 
