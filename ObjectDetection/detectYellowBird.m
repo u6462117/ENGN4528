@@ -1,5 +1,10 @@
 %% Try other than hsv
 function [recs] = detectYellowBird(vidFrame)
+%% Remove pause and score
+vidFrame(1:65,1:65) = 0;
+vidFrame(1:50,320:end) = 0;
+vidFrame(260:end,422:end) = 0;
+
 % Convert RGB image to chosen color space
 I = rgb2hsv(vidFrame);
 
@@ -20,13 +25,11 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
     (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
 
-%remove pause button and menu
-result(1:60,1:60) = 0; %remove pause button
-result(1:60,320:end) = 0; %remove score
-
 thresh = 190;
 upThresh = 400;
 
+se = strel('disk',8);
+result = imclose(result,se);
 
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);

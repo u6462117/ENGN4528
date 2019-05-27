@@ -1,4 +1,4 @@
-function [patchesMatch, watchBoxNow] = CompareWatchPatchWithMemory(currFrame, watchBoxStruct)
+function [patchesMatch, watchBoxNow] = CompareWatchPatchWithMemory(currFrame, ~)
     patchesMatch = true;
     watchBoxNow = NaN;
     
@@ -7,7 +7,7 @@ function [patchesMatch, watchBoxNow] = CompareWatchPatchWithMemory(currFrame, wa
     if slingshotFound
 %         slingshotLoc = slingshotLoc{1};
 
-        watchBoxMem = watchBoxStruct.Memory;
+%         watchBoxMem = watchBoxStruct.Memory;
         watchBoxNow = OffsetFromSlingshot(slingshotLoc, currFrame);
         
         mainBird = FindMainBird(watchBoxNow);

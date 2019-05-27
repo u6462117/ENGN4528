@@ -5,13 +5,16 @@ B = vidFrame(:,:,3);
 
 result = (R > 120 & R < 165) .* (G > 190 & G<260) .* (B > 35 & B < 120);
 
-thresh = 28;
+se = strel('disk',8);
+result = imclose(result,se);
+
+thresh = 35;
 
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);
 birdsFound  = CC.PixelIdxList(val>thresh);
 
-recs = cell(1,length(birdsFound));
+recs = cell(1,0);
 
 for bird = 1:length(birdsFound)
     pixels = birdsFound{bird};
@@ -22,7 +25,9 @@ for bird = 1:length(birdsFound)
     pixWid = max(cols) - min(cols) + 25;
     pixHgt = max(rows) - min(rows) + 25;
     
-    recs{1,bird} = [topCol topRow  pixWid pixHgt];
+    if 0.7 < pixHgt/pixWid && 1.3 > pixHgt/pixWid
+        recs{1,end+1} = [topCol topRow  pixWid pixHgt];
+    end
 end
 
 

@@ -1,4 +1,9 @@
 function [recs] = detectBlackBird(vidFrame)
+%% Remove pause and score
+vidFrame(1:65,1:65) = 0;
+vidFrame(1:50,320:end) = 0;
+vidFrame(260:end,422:end) = 0;
+
 % Convert RGB image to chosen color space
 I = vidFrame;
 
@@ -39,7 +44,7 @@ for bird = 1:length(birdsFound)
     %Remove objects that don't meet the expected aspect ratio of the
     %bird
     if 0.7 < pixHgt/pixWid && 1.3 > pixHgt/pixWid
-        if pixWid <80 %determined empirically
+        if pixWid <50 %determined empirically
             recs{1,end+1} = [topCol topRow  pixWid pixHgt];
         end
     end

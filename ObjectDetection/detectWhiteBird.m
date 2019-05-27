@@ -1,10 +1,37 @@
 % Not HSV
 function [recs] = detectWhiteBird(vidFrame)
-% R = vidFrame(:,:,1);
-% G = vidFrame(:,:,2);
-% B = vidFrame(:,:,3);
-% 
-% result = (R  > 230) .* (G > 230) .* (B > 230);
+%% Remove bottom half of frame
+vidFrame(round(size(vidFrame,1)/2):end,80:end,:) = 0;
+
+%% Remove pause and score
+vidFrame(1:65,1:65,:) = 0;
+vidFrame(1:50,320:end,:) = 0;
+vidFrame(260:end,422:end,:) = 0;
+
+%% Mask for white feathers
+
+% Convert RGB image to chosen color space
+I = rgb2ycbcr(vidFrame);
+
+% Define thresholds for channel 1 based on histogram settings
+channel1Min = 207.000;
+channel1Max = 255.000;
+
+% Define thresholds for channel 2 based on histogram settings
+channel2Min = 113.000;
+channel2Max = 130.000;
+
+% Define thresholds for channel 3 based on histogram settings
+channel3Min = 119.000;
+channel3Max = 142.000;
+
+% Create mask based on chosen histogram thresholds
+whiteResult = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
+    (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
+    (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
+
+
+%% Mask for beak colours
 
 % Convert RGB image to chosen color space
 I = vidFrame;
@@ -30,7 +57,15 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
 result(1:60,1:60) = 0; %remove pause button
 result(1:60,320:end) = 0; %remove score
 
-thresh = 20; 
+se = strel('diamond',8);
+beakClosed = imclose(result,se);
+whiteClosed = imclose(whiteResult,se);
+result = beakClosed & whiteClosed;
+
+se = strel('diamond',2);
+result = imerode(result,se);
+
+thresh = 10; 
 upThresh = 150;
 
 CC          = bwconncomp(result);
