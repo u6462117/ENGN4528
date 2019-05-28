@@ -88,7 +88,7 @@ function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fH
     if ~isempty(birds)
         bird = birds{1};
         
-        [movingReg, T] = FindBetterCorrespondences(prevFrame, currFrame);
+        [movingReg, T] = FindCorrespondences(prevFrame, currFrame);
         if isa(movingReg.Transformation,'affine2d')
             [trajX, trajY, worldPoints] = FindQuadratic(bird, T, dt, worldPoints);
             trajLine = plot(trajX, trajY, 'r', 'Linewidth', 3);

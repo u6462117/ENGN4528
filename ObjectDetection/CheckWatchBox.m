@@ -12,9 +12,5 @@ function [prompt, mainBird] = CheckWatchBox(currFrame)
             prompt = mainBird;
         end
         
-%         if ~isnan(mainBird)
-%           patchesMatch = false;  
-%         end
-        
     end
 end
