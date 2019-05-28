@@ -1,34 +1,18 @@
 function [trajX, trajY, worldPoints] = FindQuadratic(bird, T, dt, worldPoints)
-persistent runningOX;
-persistent runningOY;
 
-if isempty(worldPoints)
-    runningOX = 0;
-    runningOY = 0;
-end
 
 birdX2 = bird(1) + bird(3)/2;
 birdY2 = bird(2) + bird(4)/2;
 
 sx = sqrt(T(1,1)^2 + T(1,2)^2);
 sy = sqrt(T(2,1)^2 + T(2,2)^2);
-% sx = T(1,1);
-% sy = T(2,2);
 tx = T(3,1);
 ty = T(3,2);
 
 [birdX1, birdY1] = ConvertFrames(birdX2,birdY2,...
                                 tx, ty, sx, sy);
                             
-% [birdX2p, birdY2p] = ConvertBackFrames(birdX2,birdY2,...
-%                                 tx, ty, sx, sy);
-                            
 [worldPoints] = AddWorldPoints(birdX2, birdY2, worldPoints, tx, ty, sx, sy);
-
-% worldPoints = [worldPoints; birdX2p, birdY2p];
-
-% runningOX = runningOX + tx;
-% runningOY = runningOY + ty;
 
 
 [trajX, trajY] = FindTimeSeries(birdX1, birdY1,...
@@ -58,13 +42,6 @@ y = 1/sy * (y - ty);
 
 end
 
-function [x,y] = ConvertBackFrames(x, y, tx, ty, sx, sy)
-
-
-x = sx * (x + tx);
-y = sy * (y + ty);
-
-end
 
 function [x,y] = FindTimeSeries(x1, y1, x2, y2, dt)
 

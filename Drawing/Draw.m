@@ -1,4 +1,4 @@
-function [recs, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPoints)
+function [recs, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPoints, dt)
 
     recs = [];
 
@@ -10,7 +10,7 @@ function [recs, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPo
         set(fHand,'Cdata',currFrame);
         
     else
-        [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fHand, worldPoints);
+        [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fHand, worldPoints, dt);
         
     end
     
@@ -49,7 +49,7 @@ recs = DrawRectangles(grenPigs, 'green', recs);
 
 end
 
-function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fHand, worldPoints)
+function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fHand, worldPoints, dt)
     
     recs = [];
 
@@ -58,24 +58,24 @@ function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fH
 
     %Find the flying bird and draw its bounding box
     if      strcmp(prompt, 'Red')
-        bird = detectRedBird(currFrame);
-        recs = DrawRectangles(bird, 'red', recs);
+        birds = detectRedBird(currFrame);
+        recs = DrawRectangles(birds, 'red', recs);
         
     elseif  strcmp(prompt, 'Yellow')
-        bird = detectYellowBird(currFrame);
-        recs = DrawRectangles(bird, 'yellow', recs);
+        birds = detectYellowBird(currFrame);
+        recs = DrawRectangles(birds, 'yellow', recs);
         
     elseif  strcmp(prompt, 'White')
-        bird = detectWhiteBird(currFrame);
-        recs = DrawRectangles(bird, 'white', recs);
+        birds = detectWhiteBird(currFrame);
+        recs = DrawRectangles(birds, 'white', recs);
         
     elseif  strcmp(prompt, 'Blue')
-        bird = detectBlueBird(currFrame);
-        recs = DrawRectangles(bird, 'blue', recs);
+        birds = detectBlueBird(currFrame);
+        recs = DrawRectangles(birds, 'blue', recs);
         
     elseif  strcmp(prompt, 'Black')
-        bird = detectBlackBird(currFrame);
-        recs = DrawRectangles(bird, 'black', recs);
+        birds = detectBlackBird(currFrame);
+        recs = DrawRectangles(birds, 'black', recs);
         
     end
     
@@ -85,12 +85,12 @@ function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fH
 
     
     %Draw bird trajectories
-    if ~isempty(bird)
-        bird = bird{1};
+    if ~isempty(birds)
+        bird = birds{1};
         
-        [movingReg, TBetter] = FindBetterCorrespondences(prevFrame, currFrame);
+        [movingReg, T] = FindBetterCorrespondences(prevFrame, currFrame);
         if isa(movingReg.Transformation,'affine2d')
-            [trajX, trajY, worldPoints] = FindQuadratic(bird, TBetter, 0.1, worldPoints);
+            [trajX, trajY, worldPoints] = FindQuadratic(bird, T, dt, worldPoints);
             trajLine = plot(trajX, trajY, 'r', 'Linewidth', 3);
             trajLine.Color(4) = 0.7;
 

@@ -19,6 +19,10 @@ prevFrame = NaN;
 prompt = 'None';
 plotOverlays = [];
 worldPoints = [];
+
+%Export video?
+exportVideo = false;
+storedFrames = [];
 i = 1;
 
 %% Main Loop
@@ -26,7 +30,7 @@ i = 1;
 figure();
 fHand = imshow(readFrame(v));
 
-while time < 66.1
+while time < v.Duration
     %% Setup
     currFrame = readFrame(v);
 
@@ -41,7 +45,6 @@ while time < 66.1
             birdFlying = false;
             worldPoints = [];
             slingshotDetectTime = time;
-            watchBoxStruct = GetWatchBoxFromSlingshot(slingshotLoc, currFrame);
             prompt = 'All';
         else
             if ~birdFlying
@@ -53,18 +56,12 @@ while time < 66.1
         
         if ~birdFlying
             
-            [patchesMatch, watchBoxNow] = ...
-                CompareWatchPatchWithMemory(currFrame, watchBoxStruct);
-            
-            if patchesMatch
-                prompt = 'All';
-                
-            else
-                
-                mainBird = FindMainBird(watchBoxNow);                
+            [prompt, mainBird] = CheckWatchBox(currFrame);
+
+            if ~strcmp(prompt, 'All')
+
                 birdFlying = true;
-                prompt = mainBird;
-                disp(mainBird);
+                disp([mainBird ' bird is flying!']);
                 
             end
             
@@ -75,37 +72,44 @@ while time < 66.1
     
     
     %% Draw New Frame
-    if time > 60
-       prompt = 'None'; 
-    end
     
     delete(plotOverlays);
-    [plotOverlays, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPoints);
+    [plotOverlays, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPoints, dt);
     
     %% Tidy Up
     time = time + dt;
-    if time < 62
+    if time < v.Duration
         v.CurrentTime = time;
     end
+    
     prevFrame = currFrame;
-    F(i) = getframe(gcf);
-    i = i+1;
+    
+    if time > v.Duration - 6.5
+       prompt = 'None'; 
+    end
+    
+    if exportVideo
+        storedFrames(i) = getframe(gcf);
+        i = i+1;
+    end
+    
+
 end
 
-delete(plotOverlays);
-
-% create the video writer with 1 fps
-writerObj = VideoWriter('myVideo.avi');
-writerObj.Quality = 95;
-writerObj.FrameRate = 20;
-
-
-open(writerObj);
-% write the frames to the video
-for i=1:length(F)
-    % convert the image to a frame
-    frame = F(i) ;
-    writeVideo(writerObj, frame);
+%% Export video, if requested
+if exportVideo
+    % create the video writer with 20 fps
+    writerObj = VideoWriter('AngryBirdsAnnotated.avi');
+    writerObj.Quality = 95;
+    writerObj.FrameRate = 20;
+    
+    % write the frames to the video
+    open(writerObj);
+    for i=1:length(F)
+        % convert the image to a frame
+        frame = F(i) ;
+        writeVideo(writerObj, frame);
+    end
+    % close the writer object
+    close(writerObj);
 end
-% close the writer object
-close(writerObj);

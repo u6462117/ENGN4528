@@ -38,6 +38,5 @@ function [mainBird] = FindMainBird(watchBoxNow)
         mainBird = 'Black';
     end
     
-    %assert(~isnan(mainBird));
     
 end
