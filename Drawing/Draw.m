@@ -1,16 +1,16 @@
-function [recs, worldPoints] = Draw(prompt, currFrame, prevFrame, h, worldPoints)
+function [recs, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPoints)
 
     recs = [];
 
     if strcmp(prompt, 'All')
-        set(h,'Cdata',currFrame);
+        set(fHand,'Cdata',currFrame);
         recs = DrawAllBoxes(currFrame);
         
     elseif strcmp(prompt, 'None')
-        set(h,'Cdata',currFrame);
+        set(fHand,'Cdata',currFrame);
         
     else
-        [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h, worldPoints);
+        [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fHand, worldPoints);
         
     end
     
@@ -49,12 +49,14 @@ recs = DrawRectangles(grenPigs, 'green', recs);
 
 end
 
-function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h, worldPoints)
-
-    set(h,'Cdata',currFrame);
-
-    recs = [];
+function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fHand, worldPoints)
     
+    recs = [];
+
+    %Reset the figure
+    set(fHand,'Cdata',currFrame);
+
+    %Find the flying bird and draw its bounding box
     if      strcmp(prompt, 'Red')
         bird = detectRedBird(currFrame);
         recs = DrawRectangles(bird, 'red', recs);
@@ -82,17 +84,17 @@ function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,
     recs = DrawRectangles(grenPigs, 'green', recs);
 
     
-    %
+    %Draw bird trajectories
     if ~isempty(bird)
         bird = bird{1};
         
         [movingReg, TBetter] = FindBetterCorrespondences(prevFrame, currFrame);
         if isa(movingReg.Transformation,'affine2d')
             [trajX, trajY, worldPoints] = FindQuadratic(bird, TBetter, 0.1, worldPoints);
-            fhand = plot(trajX, trajY, 'r', 'Linewidth', 3);
-            fhand.Color(4) = 0.7;
+            trajLine = plot(trajX, trajY, 'r', 'Linewidth', 3);
+            trajLine.Color(4) = 0.7;
 
-            recs = [recs, fhand];
+            recs = [recs, trajLine];
         end
 
     end

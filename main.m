@@ -24,7 +24,7 @@ i = 1;
 %% Main Loop
 
 figure();
-h = imshow(readFrame(v));
+fHand = imshow(readFrame(v));
 
 while time < 66.1
     %% Setup
@@ -80,7 +80,7 @@ while time < 66.1
     end
     
     delete(plotOverlays);
-    [plotOverlays, worldPoints] = Draw(prompt, currFrame, prevFrame, h, worldPoints);
+    [plotOverlays, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPoints);
     
     %% Tidy Up
     time = time + dt;
