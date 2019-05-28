@@ -3,7 +3,7 @@ function [recs] = detectWhiteBird(vidFrame)
 %% Remove bottom half of frame
 vidFrame(round(size(vidFrame,1)/2):end,80:end,:) = 0;
 
-%% Remove pause and score (only if full frame, not watchBox
+%% Remove pause and score (only if full frame, not watchBox)
 if size(vidFrame,1)> 150
     vidFrame(1:65,1:65,:) = 0;
     vidFrame(1:50,320:end,:) = 0;

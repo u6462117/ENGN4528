@@ -91,6 +91,8 @@ function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fH
         [movingReg, T] = FindCorrespondences(prevFrame, currFrame);
         if isa(movingReg.Transformation,'affine2d')
             [trajX, trajY, worldPoints] = FindQuadratic(bird, T, dt, worldPoints);
+            
+            %Plot line
             trajLine = plot(trajX, trajY, 'r', 'Linewidth', 3);
             trajLine.Color(4) = 0.7;
 

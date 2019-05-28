@@ -6,24 +6,25 @@ v = VideoReader("Angry Birds In-game Trailer.avi");
 %% Variables
 
 %time
-time = 10;
-dt = 0.1;
-slingshotTimeout = 7;
+time                = 10;
+dt                  = 0.1;
+slingshotTimeout    = 7;
 slingshotDetectTime = -9999;
 
-slingshotFound = false;
-birdFlying = false;
+%State Transition
+slingshotFound  = false;
+birdFlying      = false;
 
-watchBoxStruct = struct('Location', NaN(1,4), 'Memory', NaN(10,10));
-prevFrame = NaN;
-prompt = 'None';
-plotOverlays = [];
-worldPoints = [];
+%Plotting
+prevFrame       = NaN;
+prompt          = 'None';
+plotOverlays    = [];
+worldPoints     = [];
 
 %Export video?
-exportVideo = false;
-storedFrames = [];
-i = 1;
+exportVideo     = false;
+storedFrames    = [];
+i               = 1;
 
 %% Main Loop
 
@@ -42,10 +43,10 @@ while time < v.Duration
         
         %If slingshot found, declare Watch Box.
         if slingshotFound
-            birdFlying = false;
-            worldPoints = [];
+            birdFlying          = false;
+            worldPoints         = [];
             slingshotDetectTime = time;
-            prompt = 'All';
+            prompt              = 'All';
         else
             if ~birdFlying
                 prompt = 'None';
@@ -54,35 +55,38 @@ while time < v.Duration
           
     else %If less than timeout period
         
+        %If bird has not beed delcared, check watch box
         if ~birdFlying
             
             [prompt, mainBird] = CheckWatchBox(currFrame);
-
-            if ~strcmp(prompt, 'All')
+            
+            %Bird found in watch box!
+            if ~isnan(mainBird)
 
                 birdFlying = true;
                 disp([mainBird ' bird is flying!']);
                 
-            end
-            
-        end
-        
-        
+            end   
+        end        
     end
-    
-    
+ 
     %% Draw New Frame
     
+    %Delete old plotOverlays
     delete(plotOverlays);
+    
+    %Draw new frame and overlays
     [plotOverlays, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPoints, dt);
     
+    
     %% Tidy Up
+    
     time = time + dt;
+    prevFrame = currFrame;
+    
     if time < v.Duration
         v.CurrentTime = time;
     end
-    
-    prevFrame = currFrame;
     
     if time > v.Duration - 6.5
        prompt = 'None'; 

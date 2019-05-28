@@ -23,10 +23,6 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
 se = strel('diamond',2);
 result = imclose(result,se);
 
-% % %% Close image
-% % se = strel('disk',7);
-% % result = imclose(result,se);
-
 min_thresh = 160; %determined empirically
 max_thresh = 1500;
 
@@ -50,29 +46,24 @@ for slingshot = 1:length(slingshotFound)
     %Remove objects that don't meet the expected aspect ratio of the
     %slingshot
 %     if (54/22 < pixHgt/pixWid && 68/17 > pixHgt/pixWid) || (45/16 < pixHgt/pixWid && 59/16 > pixHgt/pixWid)  
-      if 2.4<pixHgt/pixWid && 4>pixHgt/pixWid
+    if 2.4<pixHgt/pixWid && 4>pixHgt/pixWid
         if 15<=pixWid && 500>pixWid
             recs{1,end+1} = [topCol topRow  pixWid pixHgt];
         end
     end
     
 end
+
+boolSlingshotFound = 0;
+
 if ~isempty(recs)
     recsCheck = recs{1};
+    
     topCol = recsCheck(1);
     topRow = recsCheck(2);
     pixWid = recsCheck(3);
-end
-
-if isempty(recs)
-    boolSlingshotFound = 0;
-elseif isempty(recs{1,1})
-    boolSlingshotFound = 0;
-else
     if (topRow + 20 < 320) && (topCol + pixWid + 135 < 480)
         boolSlingshotFound = 1;
-    else
-        boolSlingshotFound = 0;
     end
 end
 
