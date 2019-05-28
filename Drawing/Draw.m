@@ -54,7 +54,12 @@ recs = DrawRectangles(grenPigs, 'green', recs);
 end
 
 function [recs, memory] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory)
+persistent lastTime;
+persistent lastFrame;
 
+if isempty(lastTime)
+   lastTime = -9999; 
+end
 
 %     imshow(currFrame);
     set(h,'Cdata',currFrame);
@@ -91,6 +96,40 @@ function [recs, memory] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time,
     %
     if ~isempty(bird)
         bird = bird{1};
+        
+%         memory{end+1} = currFrame;
+%         
+%         if length(memory) > 5
+%             memory = memory(2:end);
+%         end
+%         
+%         [movingReg, TBetter] = FindBetterCorrespondences(memory{1}, currFrame);
+%         if isa(movingReg.Transformation,'affine2d')
+%             [trajX, trajY] = FindQuadratic(bird, TBetter, length(memory)*0.1);
+%             fhand = plot(trajX, trajY);
+% 
+%             recs = [recs, fhand];
+%         end
+        
+%         if (time - lastTime > 0.4)
+%             
+%             if isempty(lastFrame)
+%                 lastFrame = currFrame;
+%             else
+%                 try
+%                     [movingReg,T] = FindBetterCorrespondences(lastFrame, currFrame);
+% %                     T = movingReg.Transformation.T;
+%                     [trajX, trajY] = FindQuadratic(bird, T, time - lastTime);
+%                     fhand = plot(trajX, trajY);
+%                     
+%                     recs = [recs, fhand];
+%                 catch
+%                     
+%                 end
+%             end
+%             
+%             lastTime = time;
+%         end
      
         [movingReg, TBetter] = FindBetterCorrespondences(prevFrame, currFrame);
         if isa(movingReg.Transformation,'affine2d')
