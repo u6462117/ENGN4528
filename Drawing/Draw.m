@@ -1,4 +1,4 @@
-function [recs, memory] = Draw(prompt, currFrame, prevFrame, h,time, memory)
+function [recs, memory, worldPoints] = Draw(prompt, currFrame, prevFrame, h,time, memory, worldPoints)
 
     recs = [];
 
@@ -14,7 +14,7 @@ function [recs, memory] = Draw(prompt, currFrame, prevFrame, h,time, memory)
 %         imshow(currFrame);
         
     else
-        [recs, memory] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory);
+        [recs, memory, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory, worldPoints);
         
     end
     
@@ -53,13 +53,13 @@ recs = DrawRectangles(grenPigs, 'green', recs);
 
 end
 
-function [recs, memory] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory)
-persistent lastTime;
-persistent lastFrame;
-
-if isempty(lastTime)
-   lastTime = -9999; 
-end
+function [recs, memory, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory, worldPoints)
+% persistent lastTime;
+% persistent lastFrame;
+% 
+% if isempty(lastTime)
+%    lastTime = -9999; 
+% end
 
 %     imshow(currFrame);
     set(h,'Cdata',currFrame);
@@ -133,8 +133,9 @@ end
      
         [movingReg, TBetter] = FindBetterCorrespondences(prevFrame, currFrame);
         if isa(movingReg.Transformation,'affine2d')
-            [trajX, trajY] = FindQuadratic(bird, TBetter, 0.1);
-            fhand = plot(trajX, trajY);
+            [trajX, trajY, worldPoints] = FindQuadratic(bird, TBetter, 0.1, worldPoints);
+            fhand = plot(trajX, trajY, 'r', 'Linewidth', 3);
+            fhand.Color(4) = 0.7;
 
             recs = [recs, fhand];
         end

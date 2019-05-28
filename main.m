@@ -24,6 +24,9 @@ movingRegs = [];
 
 memory = cell(1,0);
 
+worldPoints = [];
+i = 1;
+
 %% Main Loop
 
 figure();
@@ -50,6 +53,7 @@ while time < 66.1
         %If slingshot found, declare Watch Box.
         if slingshotFound
             birdFlying = false;
+            worldPoints = [];
             slingshotDetectTime = time;
             watchBoxStruct = GetWatchBoxFromSlingshot(slingshotLoc, currFrame);
             prompt = 'All';
@@ -90,7 +94,7 @@ while time < 66.1
     end
     
     delete(plotOverlays);
-    [plotOverlays, memory] = Draw(prompt, currFrame, prevFrame, h, time, memory);
+    [plotOverlays, memory, worldPoints] = Draw(prompt, currFrame, prevFrame, h, time, memory, worldPoints);
     
     %% Tidy Up
     time = time + dt;
@@ -98,7 +102,24 @@ while time < 66.1
         v.CurrentTime = time;
     end
     prevFrame = currFrame;
-
+    F(i) = getframe(gcf);
+    i = i+1;
 end
 
 delete(plotOverlays);
+
+% create the video writer with 1 fps
+writerObj = VideoWriter('myVideo.avi');
+writerObj.Quality = 95;
+writerObj.FrameRate = 20;
+% set the seconds per image
+% open the video writer
+open(writerObj);
+% write the frames to the video
+for i=1:length(F)
+    % convert the image to a frame
+    frame = F(i) ;
+    writeVideo(writerObj, frame);
+end
+% close the writer object
+close(writerObj);
