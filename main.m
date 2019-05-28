@@ -1,10 +1,9 @@
 close all;
 clearvars();
+
 v = VideoReader("Angry Birds In-game Trailer.avi");
-w = warning ('off','all');
 
 %% Variables
-test = false;
 
 %time
 time = 10;
@@ -14,16 +13,11 @@ slingshotDetectTime = -9999;
 
 slingshotFound = false;
 birdFlying = false;
-stitch = false;
 
 watchBoxStruct = struct('Location', NaN(1,4), 'Memory', NaN(10,10));
 prevFrame = NaN;
 prompt = 'None';
 plotOverlays = [];
-movingRegs = [];
-
-memory = cell(1,0);
-
 worldPoints = [];
 i = 1;
 
@@ -35,15 +29,7 @@ h = imshow(readFrame(v));
 while time < 66.1
     %% Setup
     currFrame = readFrame(v);
-%     %draw watchbox in a separate figure
-%     if exist('watchBoxNow')
-%     if ~isnan(watchBoxNow)
-%         figure(2)
-%         imshow(watchBoxNow)
-%         drawnow
-%         figure(1)
-%     end
-%     end
+
     %% Mode Identifiaction
     if (time - slingshotDetectTime) > slingshotTimeout
         
@@ -94,7 +80,7 @@ while time < 66.1
     end
     
     delete(plotOverlays);
-    [plotOverlays, memory, worldPoints] = Draw(prompt, currFrame, prevFrame, h, time, memory, worldPoints);
+    [plotOverlays, worldPoints] = Draw(prompt, currFrame, prevFrame, h, worldPoints);
     
     %% Tidy Up
     time = time + dt;
@@ -112,8 +98,8 @@ delete(plotOverlays);
 writerObj = VideoWriter('myVideo.avi');
 writerObj.Quality = 95;
 writerObj.FrameRate = 20;
-% set the seconds per image
-% open the video writer
+
+
 open(writerObj);
 % write the frames to the video
 for i=1:length(F)

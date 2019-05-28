@@ -1,20 +1,16 @@
-function [recs, memory, worldPoints] = Draw(prompt, currFrame, prevFrame, h,time, memory, worldPoints)
+function [recs, worldPoints] = Draw(prompt, currFrame, prevFrame, h, worldPoints)
 
     recs = [];
 
     if strcmp(prompt, 'All')
-%         cla('reset');
-%         imshow(currFrame);
         set(h,'Cdata',currFrame);
         recs = DrawAllBoxes(currFrame);
         
     elseif strcmp(prompt, 'None')
-%         cla('reset');
         set(h,'Cdata',currFrame);
-%         imshow(currFrame);
         
     else
-        [recs, memory, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory, worldPoints);
+        [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h, worldPoints);
         
     end
     
@@ -53,15 +49,8 @@ recs = DrawRectangles(grenPigs, 'green', recs);
 
 end
 
-function [recs, memory, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory, worldPoints)
-% persistent lastTime;
-% persistent lastFrame;
-% 
-% if isempty(lastTime)
-%    lastTime = -9999; 
-% end
+function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h, worldPoints)
 
-%     imshow(currFrame);
     set(h,'Cdata',currFrame);
 
     recs = [];
@@ -97,40 +86,6 @@ function [recs, memory, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevF
     if ~isempty(bird)
         bird = bird{1};
         
-%         memory{end+1} = currFrame;
-%         
-%         if length(memory) > 5
-%             memory = memory(2:end);
-%         end
-%         
-%         [movingReg, TBetter] = FindBetterCorrespondences(memory{1}, currFrame);
-%         if isa(movingReg.Transformation,'affine2d')
-%             [trajX, trajY] = FindQuadratic(bird, TBetter, length(memory)*0.1);
-%             fhand = plot(trajX, trajY);
-% 
-%             recs = [recs, fhand];
-%         end
-        
-%         if (time - lastTime > 0.4)
-%             
-%             if isempty(lastFrame)
-%                 lastFrame = currFrame;
-%             else
-%                 try
-%                     [movingReg,T] = FindBetterCorrespondences(lastFrame, currFrame);
-% %                     T = movingReg.Transformation.T;
-%                     [trajX, trajY] = FindQuadratic(bird, T, time - lastTime);
-%                     fhand = plot(trajX, trajY);
-%                     
-%                     recs = [recs, fhand];
-%                 catch
-%                     
-%                 end
-%             end
-%             
-%             lastTime = time;
-%         end
-     
         [movingReg, TBetter] = FindBetterCorrespondences(prevFrame, currFrame);
         if isa(movingReg.Transformation,'affine2d')
             [trajX, trajY, worldPoints] = FindQuadratic(bird, TBetter, 0.1, worldPoints);
