@@ -32,15 +32,15 @@ h = imshow(readFrame(v));
 while time < 66.1
     %% Setup
     currFrame = readFrame(v);
-    %draw watchbox in a separate figure
-    if exist('watchBoxNow')
-    if ~isnan(watchBoxNow)
-        figure(2)
-        imshow(watchBoxNow)
-        drawnow
-        figure(1)
-    end
-    end
+%     %draw watchbox in a separate figure
+%     if exist('watchBoxNow')
+%     if ~isnan(watchBoxNow)
+%         figure(2)
+%         imshow(watchBoxNow)
+%         drawnow
+%         figure(1)
+%     end
+%     end
     %% Mode Identifiaction
     if (time - slingshotDetectTime) > slingshotTimeout
         

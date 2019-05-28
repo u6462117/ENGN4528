@@ -56,6 +56,8 @@ TBetter = tform.T;
 
 points = movingMatchedPoints.Location - fixedMatchedPoints.Location;
 
+points = points(points(:,1) > 0,:);
+
 sampleSize = 2; % number of points to sample per trial
 maxDistance = 2; % max allowable distance for inliers
 
@@ -65,8 +67,6 @@ evalLineFcn = ...   % distance evaluation function
 
 [~, inlierIdx] = ransac(points,fitLineFcn,evalLineFcn, ...
     sampleSize,maxDistance);
-
-points = points(points(:,1) > 0);
 
 out = mean(points(inlierIdx, :), 1);
 
