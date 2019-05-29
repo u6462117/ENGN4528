@@ -3,11 +3,12 @@ function [recs] = detectWhiteBird(vidFrame)
 %% Remove bottom half of frame
 vidFrame(round(size(vidFrame,1)/2):end,80:end,:) = 0;
 
-%% Remove pause and score
-vidFrame(1:65,1:65,:) = 0;
-vidFrame(1:50,320:end,:) = 0;
-vidFrame(260:end,422:end,:) = 0;
-
+%% Remove pause and score (only if full frame, not watchBox)
+if size(vidFrame,1)> 150
+    vidFrame(1:65,1:65,:) = 0;
+    vidFrame(1:50,320:end,:) = 0;
+    vidFrame(260:end,422:end,:) = 0;
+end
 %% Mask for white feathers
 
 % Convert RGB image to chosen color space
@@ -52,10 +53,6 @@ channel3Max = 168.000;
 result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
     (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
-
-%remove pause button and menu
-result(1:60,1:60) = 0; %remove pause button
-result(1:60,320:end) = 0; %remove score
 
 se = strel('diamond',8);
 beakClosed = imclose(result,se);

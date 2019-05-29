@@ -4,7 +4,11 @@ function [recs] = detectBlueBird(vidFrame)
 % B = vidFrame(:,:,3);
 % 
 % result = (R > 100 & R < 140) .* (G > 120 & G < 169) .* (B > 110 & B < 196);
-
+if size(vidFrame,1) > 300
+    vidFrame(1:65,1:65) = 0;
+    vidFrame(1:50,320:end) = 0;
+    vidFrame(260:end,422:end) = 0;
+end
 % Convert RGB image to chosen color space
 I = rgb2lab(vidFrame);
 

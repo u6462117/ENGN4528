@@ -1,38 +1,40 @@
 close all;
 clearvars();
+w = warning('off','all');
+
 v = VideoReader("Angry Birds In-game Trailer.avi");
-% w = warning ('off','all');
 
 %% Variables
-test = false;
 
 %time
-time = 10;
-dt = 0.1;
-slingshotTimeout = 7;
+time                = 5;
+dt                  = 0.07;
+slingshotTimeout    = 7;
 slingshotDetectTime = -9999;
 
-slingshotFound = false;
-birdFlying = false;
-stitch = false;
+%State Transition
+slingshotFound  = false;
+birdFlying      = false;
 
-watchBoxStruct = struct('Location', NaN(1,4), 'Memory', NaN(10,10));
-prevFrame = NaN;
-prompt = 'None';
-plotOverlays = [];
-movingRegs = [];
+%Plotting
+prevFrame       = NaN;
+prompt          = 'None';
+plotOverlays    = [];
+worldPoints     = [];
 
-memory = cell(1,0);
+%Export video?
+exportVideo     = false;
+i               = 1;
 
 %% Main Loop
 
 figure();
-h = imshow(readFrame(v));
+fHand = imshow(readFrame(v));
 
-while time < 66.1
+while time < v.Duration
     %% Setup
     currFrame = readFrame(v);
-    
+
     %% Mode Identifiaction
     if (time - slingshotDetectTime) > slingshotTimeout
         
@@ -41,10 +43,10 @@ while time < 66.1
         
         %If slingshot found, declare Watch Box.
         if slingshotFound
-            birdFlying = false;
+            birdFlying          = false;
+            worldPoints         = [];
             slingshotDetectTime = time;
-            watchBoxStruct = GetWatchBoxFromSlingshot(slingshotLoc, currFrame);
-            prompt = 'All';
+            prompt              = 'All';
         else
             if ~birdFlying
                 prompt = 'None';
@@ -53,44 +55,65 @@ while time < 66.1
           
     else %If less than timeout period
         
+        %If bird has not beed delcared, check watch box
         if ~birdFlying
             
-            [patchesMatch, watchBoxNow] = ...
-                CompareWatchPatchWithMemory(currFrame, watchBoxStruct);
+            [prompt, mainBird] = CheckWatchBox(currFrame);
             
-            if patchesMatch
-                prompt = 'All';
-                
-            else
-                
-                mainBird = FindMainBird(watchBoxNow);                
+            %Bird found in watch box!
+            if ~isnan(mainBird)
+
                 birdFlying = true;
-                prompt = mainBird;
-                disp(mainBird);
+                disp([mainBird ' bird is flying!']);
                 
-            end
-            
-        end
-        
-        
+            end   
+        end        
+    end
+ 
+    %% Draw New Frame
+    
+    %Delete old plotOverlays
+    delete(plotOverlays);
+    
+    %Draw new frame and overlays
+    [plotOverlays, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPoints, dt);
+    
+    
+    %% Tidy Up
+    
+    time = time + dt;
+    prevFrame = currFrame;
+    
+    if time < v.Duration
+        v.CurrentTime = time;
     end
     
-    
-    %% Draw New Frame
-    if time > 60
+    if time > v.Duration - 6.5
        prompt = 'None'; 
     end
     
-    delete(plotOverlays);
-    [plotOverlays, memory] = Draw(prompt, currFrame, prevFrame, h, time, memory);
-    
-    %% Tidy Up
-    time = time + dt;
-    if time < 62
-        v.CurrentTime = time;
+    if exportVideo
+        storedFrames(i) = getframe(gcf);
+        i = i+1;
     end
-    prevFrame = currFrame;
+    
 
 end
 
-delete(plotOverlays);
+%% Export video, if requested
+if exportVideo
+    % create the video writer with 20 fps
+    writerObj = VideoWriter('AngryBirdsAnnotated.avi');
+    writerObj.Quality = 95;
+    writerObj.FrameRate = 29;
+    
+    % write the frames to the video
+    open(writerObj);
+    for i=1:length(storedFrames)
+        % convert the image to a frame
+        frame = storedFrames(i) ;
+        writeVideo(writerObj, frame);
+    end
+    % close the writer object
+    close(writerObj);
+end

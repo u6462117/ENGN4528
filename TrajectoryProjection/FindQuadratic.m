@@ -1,24 +1,35 @@
-function [trajX, trajY] = FindQuadratic(bird, T, dt)
+function [trajX, trajY, worldPoints] = FindQuadratic(bird, T, dt, worldPoints)
+
 
 birdX2 = bird(1) + bird(3)/2;
 birdY2 = bird(2) + bird(4)/2;
 
 sx = sqrt(T(1,1)^2 + T(1,2)^2);
 sy = sqrt(T(2,1)^2 + T(2,2)^2);
-% sx = T(1,1);
-% sy = T(2,2);
 tx = T(3,1);
 ty = T(3,2);
 
 [birdX1, birdY1] = ConvertFrames(birdX2,birdY2,...
                                 tx, ty, sx, sy);
+                            
+[worldPoints] = AddWorldPoints(birdX2, birdY2, worldPoints, tx, ty, sx, sy);
 
-% birdX1 = birdX2 - 5;
-% birdY1 = birdY2 + 5;
 
 [trajX, trajY] = FindTimeSeries(birdX1, birdY1,...
-                                    birdX2, birdY2,...
-                                    dt);
+    birdX2, birdY2,dt);
+
+if size(worldPoints, 1) > 4 
+    
+    closeEnough = (abs(worldPoints(end,1) - worldPoints(end-1,1)) + ...
+                    abs(worldPoints(end,2) - worldPoints(end-1,2))) < 50;
+   
+    if closeEnough
+        
+        qFit = polyfit(worldPoints(:,1), worldPoints(:,2), 2);
+        trajX = [birdX2:1:5*birdX2];
+        trajY = polyval(qFit, trajX);
+    end
+end
 
 
 end
@@ -30,6 +41,7 @@ x = 1/sx * (x - tx);
 y = 1/sy * (y - ty);
 
 end
+
 
 function [x,y] = FindTimeSeries(x1, y1, x2, y2, dt)
 
@@ -52,4 +64,19 @@ end
 
 x = xAv + vx * t;
 y = yAv + vy * t + 1/2 * 10 * t.^2;
+end
+
+
+function[worldPoints] = AddWorldPoints(birdX2, birdY2, worldPoints, tx, ty, sx, sy)
+    
+    rows = size(worldPoints,1);
+    
+    if ~isempty(worldPoints)
+
+        worldPoints = worldPoints - [tx * ones(rows, 1), ty * ones(rows, 1) ];
+        worldPoints(:,1) = 1/sx * worldPoints(:,1);
+        worldPoints(:,2) = 1/sy * worldPoints(:,2);
+    end
+    worldPoints = [worldPoints; birdX2, birdY2];
+
 end

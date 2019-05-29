@@ -25,7 +25,7 @@ for bird = 1:length(birdsFound)
     pixWid = max(cols) - min(cols) + 25;
     pixHgt = max(rows) - min(rows) + 25;
     
-    if 0.7 < pixHgt/pixWid && 1.3 > pixHgt/pixWid
+    if 0.8 < pixHgt/pixWid && 1.1 > pixHgt/pixWid
         recs{1,end+1} = [topCol topRow  pixWid pixHgt];
     end
 end

@@ -1,27 +1,23 @@
-function [recs, memory] = Draw(prompt, currFrame, prevFrame, h,time, memory)
+function [recs, worldPoints] = Draw(prompt, currFrame, prevFrame, fHand, worldPoints, dt)
 
     recs = [];
 
     if strcmp(prompt, 'All')
-%         cla('reset');
-%         imshow(currFrame);
-        set(h,'Cdata',currFrame);
+        set(fHand,'Cdata',currFrame);
         recs = DrawAllBoxes(currFrame);
         
     elseif strcmp(prompt, 'None')
-%         cla('reset');
-        set(h,'Cdata',currFrame);
-%         imshow(currFrame);
+        set(fHand,'Cdata',currFrame);
         
     else
-        [recs, memory] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory);
+        [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fHand, worldPoints, dt);
         
     end
     
-    [ssf, ssl] = detectSlingshot(currFrame);
-    if ssf
-        recs = DrawRectangles(ssl, 'magenta', recs);
-    end
+%     [ssf, ssl] = detectSlingshot(currFrame);
+%     if ssf
+%         recs = DrawRectangles(ssl, 'magenta', recs);
+%     end
     
 end
 
@@ -53,33 +49,33 @@ recs = DrawRectangles(grenPigs, 'green', recs);
 
 end
 
-function [recs, memory] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time, memory)
-
-
-%     imshow(currFrame);
-    set(h,'Cdata',currFrame);
-
-    recs = [];
+function [recs, worldPoints] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, fHand, worldPoints, dt)
     
+    recs = [];
+
+    %Reset the figure
+    set(fHand,'Cdata',currFrame);
+
+    %Find the flying bird and draw its bounding box
     if      strcmp(prompt, 'Red')
-        bird = detectRedBird(currFrame);
-        recs = DrawRectangles(bird, 'red', recs);
+        birds = detectRedBird(currFrame);
+        recs = DrawRectangles(birds, 'red', recs);
         
     elseif  strcmp(prompt, 'Yellow')
-        bird = detectYellowBird(currFrame);
-        recs = DrawRectangles(bird, 'yellow', recs);
+        birds = detectYellowBird(currFrame);
+        recs = DrawRectangles(birds, 'yellow', recs);
         
     elseif  strcmp(prompt, 'White')
-        bird = detectWhiteBird(currFrame);
-        recs = DrawRectangles(bird, 'white', recs);
+        birds = detectWhiteBird(currFrame);
+        recs = DrawRectangles(birds, 'white', recs);
         
     elseif  strcmp(prompt, 'Blue')
-        bird = detectBlueBird(currFrame);
-        recs = DrawRectangles(bird, 'blue', recs);
+        birds = detectBlueBird(currFrame);
+        recs = DrawRectangles(birds, 'blue', recs);
         
     elseif  strcmp(prompt, 'Black')
-        bird = detectBlackBird(currFrame);
-        recs = DrawRectangles(bird, 'black', recs);
+        birds = detectBlackBird(currFrame);
+        recs = DrawRectangles(birds, 'black', recs);
         
     end
     
@@ -88,74 +84,20 @@ function [recs, memory] = DrawBoxesAndTraj(prompt, currFrame, prevFrame, h,time,
     recs = DrawRectangles(grenPigs, 'green', recs);
 
     
-    %
-    if ~isempty(bird)
-        bird = bird{1};
-        
-        memory{end+1} = currFrame;
-        
-        if length(memory) > 10
-            memory = memory(2:end);
-        end
-        
-        [movingReg, TBetter] = FindBetterCorrespondences(memory{1}, currFrame);
+    %Draw bird trajectories
+    if ~isempty(birds)
+        bird = birds{1};
+                
+        [movingReg, T] = FindCorrespondences(prevFrame, currFrame);
         if isa(movingReg.Transformation,'affine2d')
-            [trajX, trajY] = FindQuadratic(bird, TBetter, length(memory)*0.1);
-            fhand = plot(trajX, trajY);
-
-            recs = [recs, fhand];
-        end
-        
-%         if (time - lastTime > 0.4)
-%             
-%             if isempty(lastFrame)
-%                 lastFrame = currFrame;
-%             else
-%                 try
-%                     [movingReg,T] = FindBetterCorrespondences(lastFrame, currFrame);
-% %                     T = movingReg.Transformation.T;
-%                     [trajX, trajY] = FindQuadratic(bird, T, time - lastTime);
-%                     fhand = plot(trajX, trajY);
-%                     
-%                     recs = [recs, fhand];
-%                 catch
-%                     
-%                 end
-%             end
-%             
-%             lastTime = time;
-%         end
-        
-        
-%         cMR = FindCorrespondences(prevFrame, currFrame);
-%         
-%         movingRegs = [movingRegs, cMR];
-%         
-%         if length(movingRegs) > 6
-%             
-%             
-%             movingRegs = movingRegs(2:end);
-%             
-%             TComb = eye(3);
-%             for i = 1:6
-%                 TComb = TComb * movingRegs(i).Transformation.T;
-%             end
-%             
-%             [trajX, trajY] = FindQuadratic(bird, TComb);
-%             fhand = plot(trajX, trajY);
-%             recs = [recs, fhand];
-%             
-%         end
+            [trajX, trajY, worldPoints] = FindQuadratic(bird, T, dt, worldPoints);
             
-        
+            %Plot line
+            trajLine = plot(trajX, trajY, 'r', 'Linewidth', 3);
+            trajLine.Color(4) = 0.7;
 
-%         [movingReg, TBetter] = FindBetterCorrespondences(prevFrame, currFrame);
-%         if isa(movingReg.Transformation,'affine2d')
-%             [trajX, trajY] = FindQuadratic(bird, TBetter, 0.1);
-%             fhand = plot(trajX, trajY);
-% 
-%             recs = [recs, fhand];
-%         end
+            recs = [recs, trajLine];
+        end
 
     end
 
