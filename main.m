@@ -1,13 +1,14 @@
 close all;
 clearvars();
+w = warning('off','all');
 
 v = VideoReader("Angry Birds In-game Trailer.avi");
 
 %% Variables
 
 %time
-time                = 10;
-dt                  = 0.1;
+time                = 5;
+dt                  = 0.07;
 slingshotTimeout    = 7;
 slingshotDetectTime = -9999;
 
@@ -23,7 +24,6 @@ worldPoints     = [];
 
 %Export video?
 exportVideo     = false;
-storedFrames    = [];
 i               = 1;
 
 %% Main Loop
@@ -105,13 +105,13 @@ if exportVideo
     % create the video writer with 20 fps
     writerObj = VideoWriter('AngryBirdsAnnotated.avi');
     writerObj.Quality = 95;
-    writerObj.FrameRate = 20;
+    writerObj.FrameRate = 29;
     
     % write the frames to the video
     open(writerObj);
-    for i=1:length(F)
+    for i=1:length(storedFrames)
         % convert the image to a frame
-        frame = F(i) ;
+        frame = storedFrames(i) ;
         writeVideo(writerObj, frame);
     end
     % close the writer object
