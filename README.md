@@ -34,7 +34,7 @@ Now that MATLAB is installed and configured on your device, the following are in
 1. Navigate to the directory which this project is saved in. 
 2. Find the main program, a file named main.m and double click on it. 
 3. Once the program is launched in MATLAB, make sure that the Current Folder shows the main.m file and other files. Alternatively, navigate to the HOME tab and click Open and select the main.m file.
-4. Select all folders in the Current Folder directory, right click > Add to Path > Selected Folders and Subfolders. Alternatively, manually add paths for all folders by typing in the Command Window: `addpath('FolderName')`.
+4. Select all folders in the Current Folder directory, right click > Add to Path > Selected Folders and Subfolders. Alternatively, manually add paths for all folders by typing in the Command Window: addpath('FolderName')
 5. Navigate to the EDITOR tab and hit Run.
 ```
 
@@ -44,7 +44,7 @@ Now that MATLAB is installed and configured on your device, the following are in
 
 ## GitHub Repository
 
-We use GitHub Repository as our main collaboration platform: [ENGN4528] repository (https://github.com/u6462117/ENGN4528). 
+We use GitHub Repository as our main collaboration platform: [ENGN4528 repository] (https://github.com/u6462117/ENGN4528). 
 
 ## Authors
  
