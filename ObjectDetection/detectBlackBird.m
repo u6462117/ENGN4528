@@ -1,4 +1,9 @@
 function [recs] = detectBlackBird(vidFrame)
+% DETECTBLACKBIRD  Look for any black birds in the video frame.
+%   [recs] = DETECTBLACKBIRD(vidFrame) looks for any black birds in the
+%   video frame and returns all the black birds detected in matrix form
+%
+
 %% Remove pause and score
 vidFrame(1:65,1:65) = 0;
 vidFrame(1:50,320:end) = 0;
@@ -41,10 +46,10 @@ for bird = 1:length(birdsFound)
     pixWid = max(cols) - min(cols) + 20;
     pixHgt = max(rows) - min(rows) + 25;
     
-    %Remove objects that don't meet the expected aspect ratio of the
-    %bird
+    % Remove objects that do not meet the expected aspect ratio of the
+    % bird
     if 0.7 < pixHgt/pixWid && 1.3 > pixHgt/pixWid
-        if pixWid <50 %determined empirically
+        if pixWid <50 % determined empirically
             recs{1,end+1} = [topCol topRow  pixWid pixHgt];
         end
     end

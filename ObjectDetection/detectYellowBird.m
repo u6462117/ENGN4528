@@ -1,7 +1,11 @@
-%% Try other than hsv
 function [recs] = detectYellowBird(vidFrame)
+% DETECTYELLOWBIRD  Look for any yellow birds in the video frame.
+%   [recs] = DETECTYELLOWBIRD(vidFrame) looks for any yellow birds in the
+%   video frame and returns all the yellow birds detected in matrix form
+%
+
 %% Remove pause and score
-%only if it is a full frame, not the watchbox
+% only if it is a full frame, not the watchbox
 if size(vidFrame,1) > 300
     vidFrame(1:65,1:65) = 0;
     vidFrame(1:50,320:end) = 0;
@@ -50,7 +54,7 @@ for bird = 1:length(birdsFound)
     pixHgt = max(rows) - min(rows) + 20;
     
     if 0.7 < pixHgt/pixWid && 1.3 > pixHgt/pixWid
-        if pixWid < size(vidFrame,2)/2 && topCol+pixWid<size(vidFrame,2) %avoid false detections in smaller watchBox
+        if pixWid < size(vidFrame,2)/2 && topCol+pixWid<size(vidFrame,2) % avoid false detections in smaller watchBox
             recs{1,end+1} = [topCol topRow  pixWid pixHgt];
         end
     end

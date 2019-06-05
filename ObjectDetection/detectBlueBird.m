@@ -1,9 +1,9 @@
 function [recs] = detectBlueBird(vidFrame)
-% R = vidFrame(:,:,1);
-% G = vidFrame(:,:,2);
-% B = vidFrame(:,:,3);
-% 
-% result = (R > 100 & R < 140) .* (G > 120 & G < 169) .* (B > 110 & B < 196);
+% DETECTBLUEBIRD  Look for any blue birds in the video frame.
+%   [recs] = DETECTBLUEBIRD(vidFrame) looks for any blue birds in the
+%   video frame and returns all the blue birds detected in matrix form
+%
+
 if size(vidFrame,1) > 300
     vidFrame(1:65,1:65) = 0;
     vidFrame(1:50,320:end) = 0;
@@ -29,7 +29,7 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
     (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
 
-thresh = 60; % 76 lowest blue bird, 80 false detection
+thresh = 60;
 upThresh = 110;
 
 CC          = bwconncomp(result);
@@ -48,8 +48,8 @@ for bird = 1:length(birdsFound)
     pixHgt = max(rows) - min(rows);
     
     
-    %Remove objects that don't meet the expected aspect ratio of the
-    %bird
+    % Remove objects that do not meet the expected aspect ratio of the
+    % bird
     if 0.7 < pixHgt/pixWid && 1.3 > pixHgt/pixWid
         recs{1,end+1} = [topCol topRow  pixWid pixHgt];
     end

@@ -1,4 +1,9 @@
 function [recs] = detectGreenPigs(vidFrame)
+% DETECTGREENPIGS  Look for any green pigs in the video frame.
+%   [recs] = DETECTGREENPIGS(vidFrame) looks for any green pigs in the
+%   video frame and returns all the green pigs detected in matrix form
+%
+
 R = vidFrame(:,:,1);
 G = vidFrame(:,:,2);
 B = vidFrame(:,:,3);

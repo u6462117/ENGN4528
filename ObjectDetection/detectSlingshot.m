@@ -1,4 +1,10 @@
 function [boolSlingshotFound, recs] = detectSlingshot(vidFrame)
+% DETECTSLINGSHOT  Look for presence of slingshot in the video frame.
+%   [boolSlingshotFound, recs] = DETECTSLINGSHOT(vidFrame) looks for 
+%   slingshot in the video frame and returns boolean value indicating 
+%   if it is found and the slingshot detected in matrix form
+%
+
 %% LAB
 % Convert RGB image to chosen color space
 I = rgb2lab(vidFrame);
@@ -23,12 +29,12 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
 se = strel('diamond',2);
 result = imclose(result,se);
 
-min_thresh = 160; %determined empirically
+min_thresh = 160; % determined empirically
 max_thresh = 1500;
 
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);
-slingshotFound  = CC.PixelIdxList(val > min_thresh & val<max_thresh); %& val < upThresh);
+slingshotFound  = CC.PixelIdxList(val > min_thresh & val<max_thresh);
 
 recs = cell(1,0);
 
@@ -36,16 +42,15 @@ recs = cell(1,0);
 
 for slingshot = 1:length(slingshotFound)
     pixels = slingshotFound{slingshot};
-    [rows, cols] = ind2sub(size(vidFrame), pixels); %ind2sub is super slow. Can be updated to optimise
+    [rows, cols] = ind2sub(size(vidFrame), pixels); % ind2sub is super slow. Can be updated to optimise
 
     topRow = min(rows);
     topCol = min(cols);
     pixWid = max(cols) - min(cols);
     pixHgt = max(rows) - min(rows);
 
-    %Remove objects that don't meet the expected aspect ratio of the
-    %slingshot
-%     if (54/22 < pixHgt/pixWid && 68/17 > pixHgt/pixWid) || (45/16 < pixHgt/pixWid && 59/16 > pixHgt/pixWid)  
+    % Remove objects that do not meet the expected aspect ratio of the
+    % slingshot
     if 2.4<pixHgt/pixWid && 4>pixHgt/pixWid
         if 15<=pixWid && 500>pixWid
             recs{1,end+1} = [topCol topRow  pixWid pixHgt];

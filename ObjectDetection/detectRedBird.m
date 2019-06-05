@@ -1,4 +1,9 @@
 function [recs] = detectRedBird(vidFrame)
+% DETECTREDBIRD  Look for any red birds in the video frame.
+%   [recs] = DETECTGREENPIGS(vidFrame) looks for any red birds in the
+%   video frame and returns all the red birds detected in matrix form
+%
+
 R = vidFrame(:,:,1);
 G = vidFrame(:,:,2);
 B = vidFrame(:,:,3);
@@ -22,8 +27,8 @@ for bird = 1:length(birdsFound)
     pixWid = max(cols) - min(cols) + 20;
     pixHgt = max(rows) - min(rows) + 20;
     
-    %Remove objects that don't meet the expected aspect ratio of the
-    %bird
+    % Remove objects that do not meet the expected aspect ratio of the
+    % bird
     if 0.7 < pixHgt/pixWid && 1.3 > pixHgt/pixWid
         recs{1,end+1} = [topCol topRow  pixWid pixHgt];
     end

@@ -1,5 +1,9 @@
-% Not HSV
 function [recs] = detectWhiteBird(vidFrame)
+% DETECTWHITEBIRD  Look for any white birds in the video frame.
+%   [recs] = DETECTWHITEBIRD(vidFrame) looks for any white birds in the
+%   video frame and returns all the white birds detected in matrix form
+%
+
 %% Remove bottom half of frame
 vidFrame(round(size(vidFrame,1)/2):end,80:end,:) = 0;
 
@@ -80,15 +84,11 @@ for bird = 1:length(birdsFound)
     pixWid = max(cols) - min(cols) + 20;
     pixHgt = max(rows) - min(rows) + 20;
     
-    %Remove objects that don't meet the expected aspect ratio of the
-    %bird
+    % Remove objects that do not meet the expected aspect ratio of the
+    % bird
     if 8/20 < pixHgt/pixWid && 25/20 > pixHgt/pixWid
         recs{1,end+1} = [topCol topRow  pixWid pixHgt]; 
     end
 end
-
-% if ~isempty(recs)
-%     keyboard();
-% end
 
 end
