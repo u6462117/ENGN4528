@@ -9,7 +9,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 The following software is required to run this project:
-* [MATLAB] environment (https://au.mathworks.com/products/matlab.html) 
+* [MATLAB](https://au.mathworks.com/products/matlab.html) environment 
 
 You may be required to install Add-On packages in MATLAB. To find out which Add-On packages have been installed or to install new packages, please follow the instructions in the next section - Installing. 
 
@@ -18,7 +18,7 @@ MATLAB Add-On packages required (versions listed are tested):
 * Image Processing Toolbox (version 10.3)
 
 ### Installing
-Installation Guides for the MATLAB software can be found [here] (https://au.mathworks.com/help/install/index.html?s_tid=srctitle).
+Installation Guides for the MATLAB software can be found [here](https://au.mathworks.com/help/install/index.html?s_tid=srctitle).
 
 To check existing/install new MATLAB Add-On packages:
 ```
@@ -44,7 +44,7 @@ Now that MATLAB is installed and configured on your device, the following are in
 
 ## GitHub Repository
 
-We use GitHub Repository as our main collaboration platform: [ENGN4528 repository] (https://github.com/u6462117/ENGN4528). 
+We use GitHub Repository as our main collaboration platform: [ENGN4528 repository](https://github.com/u6462117/ENGN4528). 
 
 ## Authors
  
