@@ -7,8 +7,8 @@ v = VideoReader("Angry Birds In-game Trailer.avi");
 %% Variables
 
 %time
-time                = 5;
-dt                  = 0.07;
+time                = 0;
+dt                  = 0.1;
 slingshotTimeout    = 7;
 slingshotDetectTime = -9999;
 
@@ -81,9 +81,12 @@ while time < v.Duration
     
     %% Tidy Up
     
+    %Increment the time and frame
     time = time + dt;
     prevFrame = currFrame;
     
+    %Export the frame and handle issues which occur in the last few seconds
+    %of the video
     if time < v.Duration
         v.CurrentTime = time;
     end
