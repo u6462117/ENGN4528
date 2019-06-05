@@ -29,15 +29,18 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
     (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
 
+%Set the pixel cluster thresholds
 thresh = 60;
 upThresh = 110;
 
+%Perform connected component analysis
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);
 birdsFound  = CC.PixelIdxList(val > thresh & val < upThresh);
 
 recs = cell(1,0);
 
+%Construct the bounding boxes for all pixel clusters which pass the tests
 for bird = 1:length(birdsFound)
     pixels = birdsFound{bird};
     [rows, cols] = ind2sub(size(vidFrame), pixels);

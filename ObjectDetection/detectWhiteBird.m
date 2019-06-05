@@ -4,10 +4,10 @@ function [recs] = detectWhiteBird(vidFrame)
 %   video frame and returns all the white birds detected in matrix form
 %
 
-%% Remove bottom half of frame
+% Remove bottom half of frame
 vidFrame(round(size(vidFrame,1)/2):end,80:end,:) = 0;
 
-%% Remove pause and score (only if full frame, not watchBox)
+% Remove pause and score (only if full frame, not watchBox)
 if size(vidFrame,1)> 150
     vidFrame(1:65,1:65,:) = 0;
     vidFrame(1:50,320:end,:) = 0;
@@ -58,6 +58,7 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
     (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
 
+%Perform closing and erosion
 se = strel('diamond',8);
 beakClosed = imclose(result,se);
 whiteClosed = imclose(whiteResult,se);
@@ -66,15 +67,18 @@ result = beakClosed & whiteClosed;
 se = strel('diamond',2);
 result = imerode(result,se);
 
+%Set the pixel cluster thresholds
 thresh = 10; 
 upThresh = 150;
 
+%Perform connected component analysis
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);
 birdsFound  = CC.PixelIdxList(val > thresh & val < upThresh);
 
 recs = cell(1,0);
 
+%Construct the bounding boxes for all pixel clusters which pass the tests
 for bird = 1:length(birdsFound)
     pixels = birdsFound{bird};
     [rows, cols] = ind2sub(size(vidFrame), pixels);

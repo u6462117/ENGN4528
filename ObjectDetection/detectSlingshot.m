@@ -26,23 +26,25 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
     (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
 
+%Perform closing on the image
 se = strel('diamond',2);
 result = imclose(result,se);
 
-min_thresh = 160; % determined empirically
+%Define cluster thresholds
+min_thresh = 160; 
 max_thresh = 1500;
 
+%Perform connected component analysis
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);
 slingshotFound  = CC.PixelIdxList(val > min_thresh & val<max_thresh);
 
 recs = cell(1,0);
 
-
-
+%Construct the bounding boxes for all pixel clusters which pass the tests
 for slingshot = 1:length(slingshotFound)
     pixels = slingshotFound{slingshot};
-    [rows, cols] = ind2sub(size(vidFrame), pixels); % ind2sub is super slow. Can be updated to optimise
+    [rows, cols] = ind2sub(size(vidFrame), pixels); 
 
     topRow = min(rows);
     topCol = min(cols);

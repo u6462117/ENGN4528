@@ -3,10 +3,10 @@ function [mainBird] = FindMainBird(watchBoxNow)
 %   [mainBird] = FINDMAINBIRD(watchBoxNow) finds which coloured main bird
 %   is in the watch box and returns the colour of the main bird (if any)
 %
-
+    %Initialise mainBird
     mainBird = NaN;
 
-    % Detect the main bird
+    %% Detect the main bird
     
     % Red
     recs = detectRedBird(watchBoxNow);

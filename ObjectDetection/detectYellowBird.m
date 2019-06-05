@@ -4,7 +4,7 @@ function [recs] = detectYellowBird(vidFrame)
 %   video frame and returns all the yellow birds detected in matrix form
 %
 
-%% Remove pause and score
+% Remove pause and score
 % only if it is a full frame, not the watchbox
 if size(vidFrame,1) > 300
     vidFrame(1:65,1:65) = 0;
@@ -32,18 +32,22 @@ result = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
     (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
     (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
 
+%Set pixel cluster thresholds
 thresh = 190;
 upThresh = 400;
 
+%Close the binary image to make cluster identification easier
 se = strel('disk',8);
 result = imclose(result,se);
 
+%Perform connected component analysis
 CC          = bwconncomp(result);
 val         = cellfun(@(x) numel(x),CC.PixelIdxList);
 birdsFound  = CC.PixelIdxList(val > thresh & val < upThresh);
 
 recs = cell(1,0);
 
+%Construct the bounding boxes for all pixel clusters which pass the test
 for bird = 1:length(birdsFound)
     pixels = birdsFound{bird};
     [rows, cols] = ind2sub(size(vidFrame), pixels);
